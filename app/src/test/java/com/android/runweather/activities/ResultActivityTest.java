@@ -5,13 +5,6 @@ import org.junit.Test;
 public class ResultActivityTest {
 
     @Test
-    void test_resultComponentsRender() {
-        //Given user has navigated to activity
-        //When page loads
-        //Then components render
-    }
-
-    @Test
     void test_mockObject() {
         //Given an example payload
         //When page loads
