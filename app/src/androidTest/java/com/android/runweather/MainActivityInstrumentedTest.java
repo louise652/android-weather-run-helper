@@ -3,14 +3,30 @@ package com.android.runweather;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.uiautomator.UiDevice;
 
+import com.android.runweather.Utils.UiAutomatorUtils;
 import com.android.runweather.activities.MainActivity;
+import com.android.runweather.models.WeatherVO;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.android.runweather.Utils.UiAutomatorUtils.assertViewWithTextIsVisible;
+import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermission;
+import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissionPermanently;
+import static com.android.runweather.Utils.UiAutomatorUtils.grantPermission;
+import static com.android.runweather.Utils.UiAutomatorUtils.openPermissions;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -22,13 +38,66 @@ import static org.junit.Assert.assertThat;
  */
 public class MainActivityInstrumentedTest {
 
+    public static final WeatherVO[] WEATHER = new WeatherVO[]{
+            new WeatherVO(LocalDateTime.now(),
+                    "Description",
+                    15.0,
+                    17.2,
+                    33,
+                    10.3,
+                    500)};
+
+
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
     private MainActivity activity;
+    private UiDevice device;
 
     @Before
     public void setup() {
         activity = rule.getActivity();
+        this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+    }
+
+
+    //https://blog.egorand.me/testing-runtime-permissions-lessons-learned/
+    @Test
+    public void a_shouldDisplayPermissionRequestDialogAtStartup() throws Exception {
+        assertViewWithTextIsVisible(device, UiAutomatorUtils.TEXT_ALLOW);
+        assertViewWithTextIsVisible(device, UiAutomatorUtils.TEXT_DENY);
+
+        // cleanup for the next test
+        denyCurrentPermission(device);
+    }
+
+
+    @Test
+    public void b_shouldDisplayShortRationaleIfPermissionWasDenied() throws Exception {
+        denyCurrentPermission(device);
+
+        onView(withText(R.string.permission_denied_rationale_short)).check(matches(isDisplayed()));
+        onView(withText(R.string.grant_permission)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void c_shouldDisplayLongRationaleIfPermissionWasDeniedPermanently() throws Exception {
+        denyCurrentPermissionPermanently(device);
+
+        onView(withText(R.string.permission_denied_rationale_long)).check(matches(isDisplayed()));
+        onView(withText(R.string.grant_permission)).check(matches(isDisplayed()));
+
+        // will grant the permission for the next test
+        onView(withText(R.string.grant_permission)).perform(click());
+        openPermissions(device);
+        grantPermission(device, "Contacts");
+    }
+
+    @Test
+    public void d_shouldLoadWeatherIfPermissionWasGranted() throws Exception {
+        for (WeatherVO weatherItem : WEATHER) {
+            onView(withText(weatherItem.getId())).check(matches(isDisplayed()));
+            //todo
+        }
     }
 
     @Test
