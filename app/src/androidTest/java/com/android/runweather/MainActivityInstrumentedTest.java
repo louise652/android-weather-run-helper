@@ -11,7 +11,9 @@ import com.android.runweather.Utils.UiAutomatorUtils;
 import com.android.runweather.activities.MainActivity;
 import com.android.runweather.models.WeatherVO;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -26,9 +28,6 @@ import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissio
 import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissionPermanently;
 import static com.android.runweather.Utils.UiAutomatorUtils.grantPermission;
 import static com.android.runweather.Utils.UiAutomatorUtils.openPermissions;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -48,14 +47,12 @@ public class MainActivityInstrumentedTest {
 
 
     @Rule
-    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
-    private MainActivity activity;
+    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class, false, true);
+
     private UiDevice device;
-    private View weatherBtn;
 
     @Before
     public void setup() {
-        activity = rule.getActivity();
 
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
@@ -78,10 +75,10 @@ public class MainActivityInstrumentedTest {
 
     @Test
     public void shouldDisplayRationaleIfPermissionWasDenied() throws Exception {
-        //given button has been clicked
+        //when button has been clicked
         onView(withId(R.id.weatherBtn)).perform(click());
 
-        //when location permission has been denied
+        //given location permission has been denied
         denyCurrentPermission(device);
 
 
@@ -108,6 +105,7 @@ public class MainActivityInstrumentedTest {
         grantPermission(device, "Location");
     }
 
+    @Ignore("Not yet implemented")
     @Test
     public void shouldLoadWeatherIfPermissionWasGranted() throws Exception {
         for (WeatherVO weatherItem : WEATHER) {
@@ -117,18 +115,9 @@ public class MainActivityInstrumentedTest {
     }
 
     @Test
-    public void test_mainComponentsRender() {
-        View viewById = activity.findViewById(R.id.weatherBtn);
-        assertThat(viewById, notNullValue());
-        assertThat(viewById, instanceOf(Button.class));
-    }
-
-
-    @Test
-    public void test_locationPrompt() {
-        //Given app is loaded
-        //When button clicked and location permission is not approved
-        //Then location prompt appears
+    public void mainComponentsRender() {
+        onView(withId(R.id.weatherBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.weatherBtn)).check(matches(CoreMatchers.<View>instanceOf(Button.class)));
     }
 
 
@@ -137,14 +126,6 @@ public class MainActivityInstrumentedTest {
         //Given button is clicked
         //When app asks for location permission and user agrees
         //Then result activity launches
-    }
-
-
-    @Test
-    public void test_locationDenied() {
-        //Given button is clicked
-        //When app asks for location permission and user doesn't agree
-        //Then page loads with manual option to type location
     }
 
     @Test
