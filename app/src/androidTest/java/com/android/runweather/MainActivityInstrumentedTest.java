@@ -25,9 +25,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static com.android.runweather.Utils.UiAutomatorUtils.assertViewWithTextIsVisible;
 import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermission;
-import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissionPermanently;
-import static com.android.runweather.Utils.UiAutomatorUtils.grantPermission;
-import static com.android.runweather.Utils.UiAutomatorUtils.openPermissions;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -57,10 +54,16 @@ public class MainActivityInstrumentedTest {
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
+    @Test
+    public void a_mainComponentsRender() {
+        onView(withId(R.id.weatherBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.weatherBtn)).check(matches(CoreMatchers.<View>instanceOf(Button.class)));
+    }
+
 
     //https://blog.egorand.me/testing-runtime-permissions-lessons-learned/
     @Test
-    public void shouldDisplayPermissionRequestDialogOnClick() throws Exception {
+    public void b_shouldDisplayPermissionRequestDialogOnClick() throws Exception {
         //given the app is loaded, when the weather button is clicked
         onView(withId(R.id.weatherBtn)).perform(click());
 
@@ -74,7 +77,7 @@ public class MainActivityInstrumentedTest {
 
 
     @Test
-    public void shouldDisplayRationaleIfPermissionWasDenied() throws Exception {
+    public void c_shouldDisplayRationaleIfPermissionWasDenied() throws Exception {
         //when button has been clicked
         onView(withId(R.id.weatherBtn)).perform(click());
 
@@ -84,40 +87,17 @@ public class MainActivityInstrumentedTest {
 
         //then a rationale will display
         onView(withText(R.string.text_location_permission)).check(matches(isDisplayed()));
-        onView(withText(R.string.grant_permission)).check(matches(isDisplayed()));
+        onView(withText("Allow")).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void shouldDisplayRationaleIfPermissionWasDeniedPermanently() throws Exception {
-        //given button has been clicked
-        onView(withId(R.id.weatherBtn)).perform(click());
-
-        //when location permission has been denied permanently
-        denyCurrentPermissionPermanently(device);
-
-        //then a rationale will display
-        onView(withText(R.string.text_location_permission)).check(matches(isDisplayed()));
-        onView(withText(R.string.grant_permission)).check(matches(isDisplayed()));
-
-        // will grant the permission for the next test
-        onView(withText(R.string.grant_permission)).perform(click());
-        openPermissions(device);
-        grantPermission(device, "Location");
-    }
 
     @Ignore("Not yet implemented")
     @Test
-    public void shouldLoadWeatherIfPermissionWasGranted() throws Exception {
+    public void d_shouldLoadWeatherIfPermissionWasGranted() throws Exception {
         for (WeatherVO weatherItem : WEATHER) {
             onView(withText(weatherItem.getId())).check(matches(isDisplayed()));
             //todo
         }
-    }
-
-    @Test
-    public void mainComponentsRender() {
-        onView(withId(R.id.weatherBtn)).check(matches(isDisplayed()));
-        onView(withId(R.id.weatherBtn)).check(matches(CoreMatchers.<View>instanceOf(Button.class)));
     }
 
 
