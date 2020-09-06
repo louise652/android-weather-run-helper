@@ -6,6 +6,7 @@ import android.widget.Button;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import com.android.runweather.Utils.UiAutomatorUtils;
 import com.android.runweather.activities.MainActivity;
@@ -25,6 +26,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.android.runweather.Utils.UiAutomatorUtils.allowCurrentPermission;
 import static com.android.runweather.Utils.UiAutomatorUtils.assertViewWithTextIsVisible;
 import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermission;
 
@@ -105,13 +107,18 @@ public class MainActivityInstrumentedTest {
     }
 
 
+    @Ignore("Not yet implemented")
     @Test
-    public void test_locationApproved() {
-        //Given button is clicked
-        //When app asks for location permission and user agrees
+    public void e_shouldApproveLocation() throws UiObjectNotFoundException {
+
+        //given the app is loaded, when the weather button is clicked
+        onView(withId(R.id.weatherBtn)).perform(click());
+        // when permission is granted
+        allowCurrentPermission(device);
         //Then result activity launches
     }
 
+    @Ignore("Not yet implemented")
     @Test
     public void test_manualLocationValid() {
         //Given button is clicked and user doesn't agree to location permission
@@ -119,6 +126,7 @@ public class MainActivityInstrumentedTest {
         //Then result activity launches
     }
 
+    @Ignore("Not yet implemented")
     @Test
     public void test_manualLocationInvalid() {
         //Given button is clicked and user doesn't agree to location permission
@@ -126,6 +134,7 @@ public class MainActivityInstrumentedTest {
         //An error toast appears
     }
 
+    @Ignore("Not yet implemented")
     @Test
     public void test_help() {
         //Given app is loaded
