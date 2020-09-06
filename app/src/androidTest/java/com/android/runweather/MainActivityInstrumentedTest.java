@@ -3,65 +3,122 @@ package com.android.runweather;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 
+import com.android.runweather.Utils.UiAutomatorUtils;
 import com.android.runweather.activities.MainActivity;
+import com.android.runweather.models.WeatherVO;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.android.runweather.Utils.UiAutomatorUtils.allowCurrentPermission;
+import static com.android.runweather.Utils.UiAutomatorUtils.assertViewWithTextIsVisible;
+import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermission;
 
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MainActivityInstrumentedTest {
 
+    public static final WeatherVO[] WEATHER = new WeatherVO[]{
+            new WeatherVO("1598562000",
+                    "Description",
+                    15.0,
+                    17.2,
+                    33,
+                    10.3,
+                    500)};
+
+
     @Rule
-    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
-    private MainActivity activity;
+    public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class, false, true);
+
+    private UiDevice device;
 
     @Before
     public void setup() {
-        activity = rule.getActivity();
+
+        this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
     @Test
-    public void test_mainComponentsRender() {
-        View viewById = activity.findViewById(R.id.weatherBtn);
-        assertThat(viewById, notNullValue());
-        assertThat(viewById, instanceOf(Button.class));
+    public void a_mainComponentsRender() {
+        onView(withId(R.id.weatherBtn)).check(matches(isDisplayed()));
+        onView(withId(R.id.weatherBtn)).check(matches(CoreMatchers.<View>instanceOf(Button.class)));
+    }
+
+
+    //https://blog.egorand.me/testing-runtime-permissions-lessons-learned/
+    @Test
+    public void b_shouldDisplayPermissionRequestDialogOnClick() throws Exception {
+        //given the app is loaded, when the weather button is clicked
+        onView(withId(R.id.weatherBtn)).perform(click());
+
+        //then the location prompt will appear
+        assertViewWithTextIsVisible(device, UiAutomatorUtils.TEXT_ALLOW);
+        assertViewWithTextIsVisible(device, UiAutomatorUtils.TEXT_DENY);
+
+        // cleanup for the next test
+        denyCurrentPermission(device);
     }
 
 
     @Test
-    public void test_locationPrompt() {
-        //Given app is loaded
-        //When button clicked and location permission is not approved
-        //Then location prompt appears
+    public void c_shouldDisplayRationaleIfPermissionWasDenied() throws Exception {
+        //when button has been clicked
+        onView(withId(R.id.weatherBtn)).perform(click());
+
+        //given location permission has been denied
+        denyCurrentPermission(device);
+        onView(withId(R.id.weatherBtn)).perform(click());
+
+        //then a rationale will display
+        onView(withText(R.string.text_location_permission)).check(matches(isDisplayed()));
+        onView(withText(R.string.grant_permission)).check(matches(isDisplayed()));
     }
 
 
+    @Ignore("Not yet implemented")
     @Test
-    public void test_locationApproved() {
-        //Given button is clicked
-        //When app asks for location permission and user agrees
+    public void d_shouldLoadWeatherIfPermissionWasGranted() throws Exception {
+        for (WeatherVO weatherItem : WEATHER) {
+            onView(withText(weatherItem.getId())).check(matches(isDisplayed()));
+            //todo
+        }
+    }
+
+
+    @Ignore("Not yet implemented")
+    @Test
+    public void e_shouldApproveLocation() throws UiObjectNotFoundException {
+
+        //given the app is loaded, when the weather button is clicked
+        onView(withId(R.id.weatherBtn)).perform(click());
+        // when permission is granted
+        allowCurrentPermission(device);
         //Then result activity launches
     }
 
-
-    @Test
-    public void test_locationDenied() {
-        //Given button is clicked
-        //When app asks for location permission and user doesn't agree
-        //Then page loads with manual option to type location
-    }
-
+    @Ignore("Not yet implemented")
     @Test
     public void test_manualLocationValid() {
         //Given button is clicked and user doesn't agree to location permission
@@ -69,6 +126,7 @@ public class MainActivityInstrumentedTest {
         //Then result activity launches
     }
 
+    @Ignore("Not yet implemented")
     @Test
     public void test_manualLocationInvalid() {
         //Given button is clicked and user doesn't agree to location permission
@@ -76,6 +134,7 @@ public class MainActivityInstrumentedTest {
         //An error toast appears
     }
 
+    @Ignore("Not yet implemented")
     @Test
     public void test_help() {
         //Given app is loaded
