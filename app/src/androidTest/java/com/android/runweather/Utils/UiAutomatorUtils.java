@@ -5,6 +5,9 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+/**
+ * * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
 public final class UiAutomatorUtils {
 
     public static final String TEXT_ALLOW = "Allow";
