@@ -47,16 +47,20 @@ public class LocationUtil {
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
         Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, false);
-        assert provider != null;
-        Location location = locationManager.getLastKnownLocation(provider);
-        if (location != null) {
-            System.out.println("Provider " + provider + " has been selected.");
-            int lat = (int) (location.getLatitude());
-            int lng = (int) (location.getLongitude());
-            locationResult = String.valueOf(lat).concat(",").concat(String.valueOf(lng));
-            System.out.println(locationResult);
 
+        String provider = (locationManager.getBestProvider(criteria, false) != null ? locationManager.getBestProvider(criteria, false) : "");
+
+        if (provider != "") {
+            Location location = locationManager.getLastKnownLocation(provider);
+
+            if (location != null) {
+                System.out.println("Provider " + provider + " has been selected.");
+                int lat = (int) (location.getLatitude());
+                int lng = (int) (location.getLongitude());
+                locationResult = String.valueOf(lat).concat(",").concat(String.valueOf(lng));
+                System.out.println(locationResult);
+
+            }
         }
         return locationResult;
     }

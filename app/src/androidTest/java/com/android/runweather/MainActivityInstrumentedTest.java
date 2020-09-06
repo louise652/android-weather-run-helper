@@ -13,9 +13,11 @@ import com.android.runweather.models.WeatherVO;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -31,6 +33,8 @@ import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissio
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MainActivityInstrumentedTest {
 
     public static final WeatherVO[] WEATHER = new WeatherVO[]{
@@ -83,11 +87,11 @@ public class MainActivityInstrumentedTest {
 
         //given location permission has been denied
         denyCurrentPermission(device);
-
+        onView(withId(R.id.weatherBtn)).perform(click());
 
         //then a rationale will display
         onView(withText(R.string.text_location_permission)).check(matches(isDisplayed()));
-        onView(withText("Allow")).check(matches(isDisplayed()));
+        onView(withText(R.string.grant_permission)).check(matches(isDisplayed()));
     }
 
 
