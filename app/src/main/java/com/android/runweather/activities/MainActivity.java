@@ -73,13 +73,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Setup the AutoCompleteSupport fragment. This allows the user to serach for a location if they do not want to use the lcoation services
+     * Setup the AutoCompleteSupport fragment. This allows the user to search for a location if they do not want to use the lcoation services
      *
      * @return
      */
     private AutocompleteSupportFragment initManualPlaceSelection() {
         // Initialize Places.
-        Places.initialize(getApplicationContext(), "AIzaSyD9Qbv5Ve6hw76OEHA9GyGyUMQP0lD3uVE");
+        Places.initialize(getApplicationContext(), "API_KEY");
         // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
 
