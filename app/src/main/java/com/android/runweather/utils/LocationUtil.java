@@ -6,7 +6,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -14,6 +16,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.android.runweather.R;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class LocationUtil {
 
@@ -54,13 +60,27 @@ public class LocationUtil {
             Location location = locationManager.getLastKnownLocation(provider);
 
             if (location != null) {
-                System.out.println("Provider " + provider + " has been selected.");
-                int lat = (int) (location.getLatitude());
-                int lng = (int) (location.getLongitude());
-                locationResult = String.valueOf(lat).concat(",").concat(String.valueOf(lng));
-                System.out.println(locationResult);
-
+                locationResult = getCityFromLocation(location);
             }
+
+        }
+        System.out.println(locationResult);
+        return locationResult;
+    }
+
+    private String getCityFromLocation(Location location) {
+        String locationResult;
+
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            locationResult = addresses.get(0).getSubAdminArea(); //returns the city/town location
+        } catch (IOException e) {
+            locationResult = "";
+            e.printStackTrace();
         }
         return locationResult;
     }
