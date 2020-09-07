@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.runweather.BuildConfig;
 import com.android.runweather.R;
 import com.android.runweather.utils.LocationUtil;
 import com.google.android.gms.common.api.Status;
@@ -18,7 +19,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
- 
+
     String locationServiceString;
     View view;
     AutocompleteSupportFragment autocompleteFragment;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private AutocompleteSupportFragment initManualPlaceSelection() {
         // Initialize Places.
-        Places.initialize(getApplicationContext(), "API_KEY");
+        Places.initialize(getApplicationContext(), BuildConfig.PLACES_KEY);
         // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
 

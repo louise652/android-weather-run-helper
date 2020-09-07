@@ -5,6 +5,7 @@ android {
     buildToolsVersion "21.0.1"
 
     defaultConfig {
+        buildConfigField "String", "PLACES_KEY", "\"placesKey\""
         applicationId "com.android.runweather"
         minSdkVersion 18
         targetSdkVersion 30
@@ -44,4 +45,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 }
+
+
 
