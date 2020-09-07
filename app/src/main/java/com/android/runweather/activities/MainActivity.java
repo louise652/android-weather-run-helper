@@ -1,8 +1,8 @@
 package com.android.runweather.activities;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,25 +16,25 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 public class MainActivity extends AppCompatActivity {
     TextView txtView;
-
+    String locationServiceString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-    }
-
-    public void getWeather(View view) {
-        String locationServiceString = LocationUtil.getInstance(this).checkLocationPermission();
+        locationServiceString = LocationUtil.getInstance(this).checkLocationPermission();
+        System.out.println(locationServiceString);
+        Toast.makeText(this, locationServiceString, Toast.LENGTH_LONG);
 
         if (locationServiceString.isEmpty()) {
             getManualLocation();
         }
+
     }
 
-    private void getManualLocation() {
-        txtView = findViewById(R.id.txtView);
 
+    private void getManualLocation() {
+
+        txtView = findViewById(R.id.txtView);
         // Initialize the AutocompleteSupportFragment.
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
@@ -48,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                txtView.setText(place.getName());
+
+                txtView.setText(place.getName().toString());
+
+
             }
 
 
