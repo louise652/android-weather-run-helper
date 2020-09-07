@@ -9,10 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.runweather.R;
 import com.android.runweather.utils.LocationUtil;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     TextView txtView;
@@ -23,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         locationServiceString = LocationUtil.getInstance(this).checkLocationPermission();
         System.out.println(locationServiceString);
-        Toast.makeText(this, locationServiceString, Toast.LENGTH_LONG);
+        Toast.makeText(this, locationServiceString, Toast.LENGTH_LONG).show();
 
         if (locationServiceString.isEmpty()) {
             getManualLocation();
@@ -33,31 +36,31 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getManualLocation() {
+        // Initialize Places.
+        Places.initialize(getApplicationContext(), "YOUR_API_KEY");
+        // Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(this);
 
-        txtView = findViewById(R.id.txtView);
         // Initialize the AutocompleteSupportFragment.
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        AutocompleteFilter filter = new AutocompleteFilter.Builder()
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES) //don't need anymore granularity than "City"
-                .build();
-        autocompleteFragment.setFilter(filter);
+        // Specify the types of place data to return.
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-
-                txtView.setText(place.getName().toString());
-
-
+                // TODO: Get info about the selected place.
+                txtView.setText(place.getName() + "," + place.getId());
+                System.out.println("Place: " + place.getName() + ", " + place.getId());
             }
-
 
             @Override
             public void onError(Status status) {
-                txtView.setText(status.toString());
+                // TODO: Handle the error.
+                System.out.println("An error occurred: " + status);
             }
         });
     }
