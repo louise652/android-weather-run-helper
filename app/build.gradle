@@ -3,9 +3,13 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
     buildToolsVersion "21.0.1"
-
+    /*
+    * Add placesKey=google _key_value as a property in gradle.properties to avoid exposing it
+    * See https://stackoverflow.com/questions/30796533/how-to-generate-buildconfigfield-with-string-type
+     */
+    def CONFIG = { k -> "\"${project.properties.get(k)}\"" }
     defaultConfig {
-        buildConfigField "String", "PLACES_KEY", "\"placesKey\""
+        buildConfigField "String", "PLACES_KEY", CONFIG("placesKey")
         applicationId "com.android.runweather"
         minSdkVersion 18
         targetSdkVersion 30

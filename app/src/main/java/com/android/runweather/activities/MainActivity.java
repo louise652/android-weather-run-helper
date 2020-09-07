@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private AutocompleteSupportFragment initManualPlaceSelection() {
         // Initialize Places.
+        System.out.println("KEY: " + BuildConfig.PLACES_KEY);
         Places.initialize(getApplicationContext(), BuildConfig.PLACES_KEY);
         // Create a new Places client instance.
         PlacesClient placesClient = Places.createClient(this);
