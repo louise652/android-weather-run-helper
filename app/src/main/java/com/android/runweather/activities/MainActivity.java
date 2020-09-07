@@ -2,7 +2,6 @@ package com.android.runweather.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +18,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-    TextView txtCity;
+ 
     String locationServiceString;
     View view;
     AutocompleteSupportFragment autocompleteFragment;

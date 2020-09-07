@@ -77,7 +77,7 @@ public class MainActivityInstrumentedTest {
     public void b_mainComponentsRenderWhenPermissionAllowed() throws UiObjectNotFoundException {
         //given app has loaded
 
-        // when permisions have been allowed
+        // when permissions have been allowed
         allowCurrentPermission(device);
 
         //then components load
@@ -88,10 +88,10 @@ public class MainActivityInstrumentedTest {
     }
 
     @Test
-    public void b_mainComponentsRenderWhenPermissionDenied() throws UiObjectNotFoundException {
+    public void c_mainComponentsRenderWhenPermissionDenied() throws UiObjectNotFoundException {
         //given app has loaded
 
-        // when permisions have been denied
+        // when permissions have been denied
         denyCurrentPermission(device);
 
         //then components load
