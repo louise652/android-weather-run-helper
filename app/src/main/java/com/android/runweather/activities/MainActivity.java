@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
-        autocompleteFragment.setHint(String.valueOf(R.string.location_prompt));
+        autocompleteFragment.setHint(getString(R.string.location_hint));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
