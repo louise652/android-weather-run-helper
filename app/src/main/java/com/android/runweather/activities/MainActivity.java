@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.runweather.BuildConfig;
@@ -12,11 +13,16 @@ import com.android.runweather.utils.LocationUtil;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.Arrays;
+
+/**
+ * Home activity which handles either:
+ * Eliciting location service permission from the user and getting their city from it or;
+ * Hooking into the Google Places API so the user can type and select their location manually
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,37 +58,31 @@ public class MainActivity extends AppCompatActivity {
         // Specify the types of place data to return.
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
 
-        autocompleteFragment.setHint("Enter your location");
+        autocompleteFragment.setHint(String.valueOf(R.string.location_prompt));
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(Place place) {
-
+            public void onPlaceSelected(@NonNull Place place) {
                 locationServiceString = place.getName();
-                System.out.println("Place: " + place.getName() + ", " + place.getId());
             }
 
             @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                System.out.println("An error occurred: " + status);
+            public void onError(@NonNull Status status) {
+                locationServiceString = R.string.place_error + status.getStatusMessage();
             }
         });
     }
 
 
     /**
-     * Setup the AutoCompleteSupport fragment. This allows the user to search for a location if they do not want to use the lcoation services
+     * Setup the AutoCompleteSupport fragment. This allows the user to search for a location if they do not want to use the location services
      *
-     * @return
+     * @return fragment view
      */
     private AutocompleteSupportFragment initManualPlaceSelection() {
         // Initialize Places.
-        System.out.println("KEY: " + BuildConfig.PLACES_KEY);
         Places.initialize(getApplicationContext(), BuildConfig.PLACES_KEY);
-        // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(this);
 
         // Initialize the AutocompleteSupportFragment.
         return (AutocompleteSupportFragment)
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Call out to weather API with the location passed as a param on button click
      *
-     * @param view
+     * @param view Button to call the api with location
      */
     public void callWeather(View view) {
         Toast.makeText(this, "Calling API with location: " + locationServiceString, Toast.LENGTH_LONG).show();

@@ -8,6 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+
+/**
+ * Representation of a WeatherVO returned from the weather API
+ */
 public class WeatherVO {
     String dt_text;
     String description;
