@@ -1,6 +1,7 @@
 package com.android.runweather.utils;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,6 +22,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Utility to elicit the location service on the users device to automate location entry
+ */
 public class LocationUtil {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -40,15 +44,29 @@ public class LocationUtil {
         return locationUtil;
     }
 
+    /**
+     * Checks if lcoation permission is already granted. Show prompt if not
+     *
+     * @return User town/city
+     */
     public String checkLocationPermission() {
-        String locationResult = "";
-        //check to see if we have permission for location
+        //check to see if we already have permission for location
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             showLocationPermissionPrompt();
         }
+        return getUserLocationResult();
+    }
 
+    /**
+     * Uses the location service to get last known location
+     *
+     * @return user town/city
+     */
+    private String getUserLocationResult() {
+
+        String locationResult = "";
         //if we have permission, grab coords
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
@@ -56,35 +74,56 @@ public class LocationUtil {
 
         String provider = (locationManager.getBestProvider(criteria, false) != null ? locationManager.getBestProvider(criteria, false) : "");
 
-        if (provider != "") {
-            Location location = locationManager.getLastKnownLocation(provider);
+        if (provider != null && !provider.isEmpty()) {
+            @SuppressLint("MissingPermission") //suppressing warning as we have previously checked for permissions
+                    Location location = locationManager.getLastKnownLocation(provider);
 
             if (location != null) {
-                locationResult = getCityFromLocation(location);
+                locationResult = extractTownFromLocation(location);
             }
 
         }
-        System.out.println(locationResult);
         return locationResult;
     }
 
-    private String getCityFromLocation(Location location) {
-        String locationResult;
+    /**
+     * Uses the location to pull the last known coords and translates into a town/city
+     *
+     * @param location Location service result
+     * @return user town/city
+     */
+
+    private String extractTownFromLocation(Location location) {
 
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
+        return getCityFromCoords(lat, lng);
+    }
+
+    /**
+     * Translates coordinates into a town/city
+     *
+     * @param lat Location latitude
+     * @param lng Location longitude
+     * @return user town/city
+     */
+    private String getCityFromCoords(double lat, double lng) {
+
         Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
-            locationResult = addresses.get(0).getSubAdminArea(); //returns the city/town location
+            return addresses.get(0).getSubAdminArea(); //returns the city/town location
         } catch (IOException e) {
-            locationResult = "";
+
             e.printStackTrace();
+            return "";
         }
-        return locationResult;
     }
 
+    /**
+     * Prompt to allow location
+     */
     private void showLocationPermissionPrompt() {
         // No permission. Show why we need it
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
@@ -98,6 +137,10 @@ public class LocationUtil {
         }
     }
 
+
+    /**
+     * Detailed explanation on why we are asking for location permission
+     */
     private void elicitLocationPermission() {
         //build an async alert with an explanation and extra prompt
         new AlertDialog.Builder(activity)
