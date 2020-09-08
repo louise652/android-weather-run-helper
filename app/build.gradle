@@ -10,6 +10,7 @@ android {
     def CONFIG = { k -> "\"${project.properties.get(k)}\"" }
     defaultConfig {
         buildConfigField "String", "PLACES_KEY", CONFIG("placesKey")
+        buildConfigField "String", "WEATHER_KEY", CONFIG("weatherKey")
         applicationId "com.android.runweather"
         minSdkVersion 18
         targetSdkVersion 30

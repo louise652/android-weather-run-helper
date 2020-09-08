@@ -7,20 +7,78 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 
-/**
- * Representation of a WeatherVO returned from the weather API
+/*
+  Representation of a WeatherVO returned from the weather API
  */
 public class WeatherVO {
-    String dt_text;
-    String description;
-    double temp_min;
-    double temp_max;
-    int humidity;
-    double speed;
-    int id;  //meterology code: rain between 300 and 600, clear >=800
+    public LocationVO location;
+    public CurrentCondition currentCondition;
+    public Temperature temperature;
+    public Wind wind;
+    public Rain rain;
+    public Snow snow ;
+    public Clouds clouds;
 
+    public byte[] iconData;
+
+    @Getter
+    @Setter
+    public  class CurrentCondition {
+        private int weatherId; //meterology code: rain between 300 and 600, clear >=800
+        private String condition;
+        private String descr;
+        private String icon;
+
+
+        private float pressure;
+        private float humidity;
+
+
+    }
+    @Getter
+    @Setter
+    public  class Temperature {
+        private float temp;
+        private float minTemp;
+        private float maxTemp;
+
+    }
+    @Getter
+    @Setter
+    public  class Wind {
+        private float speed;
+        private float deg;
+
+    }
+    @Getter
+    @Setter
+    public  class Rain {
+        private String time;
+        private float ammount;
+
+
+
+    }
+    @Getter
+    @Setter
+    public  class Snow {
+        private String time;
+        private float ammount;
+
+
+
+    }
+    @Getter
+    @Setter
+    public  class Clouds {
+        private int perc;
+
+
+
+
+
+    }
 
 }
 

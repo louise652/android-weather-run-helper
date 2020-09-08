@@ -1,5 +1,6 @@
 package com.android.runweather.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -96,5 +97,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void callWeather(View view) {
         Toast.makeText(this, "Calling API with location: " + locationServiceString, Toast.LENGTH_LONG).show();
+
+        //Launch result activity and pass in City
+        Intent resultIntent = new Intent(MainActivity.this, ResultActivity.class);
+        resultIntent.putExtra("city", locationServiceString);
+        MainActivity.this.startActivity(resultIntent);
+
     }
 }
