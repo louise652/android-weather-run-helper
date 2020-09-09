@@ -14,14 +14,9 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-/*
-  Representation of a WeatherVO returned from the weather API
- */
-public class WeatherVO {
-    public java.util.List<List> list;
-    public String cod;
+@ToString
+public class Wind {
+    public double speed;
+    public int deg;
 }
-
-

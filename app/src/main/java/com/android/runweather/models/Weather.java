@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @Getter
 @Setter
 @Data
@@ -16,12 +17,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-/*
-  Representation of a WeatherVO returned from the weather API
- */
-public class WeatherVO {
-    public java.util.List<List> list;
-    public String cod;
+public class Weather {
+    public String main;
+    public int id;
+    public String icon;
+    public String description;
 }
-
-

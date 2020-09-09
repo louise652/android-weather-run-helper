@@ -1,5 +1,7 @@
 package com.android.runweather.clients;
+
 import com.android.runweather.BuildConfig;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -11,8 +13,8 @@ import java.net.URL;
  * HTTP call to the openweatherapi with the city passed in as a param
  */
 public class WeatherClient {
-    private static String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
-    private static String APP_ID="&APPID=" + BuildConfig.WEATHER_KEY;
+    private static String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast?q=";
+    private static String APP_ID = "&APPID=" + BuildConfig.WEATHER_KEY;
     private static String IMG_URL = "http://openweathermap.org/img/w/";
 
 
@@ -28,7 +30,7 @@ public class WeatherClient {
         try {
 
             //make the connection
-            connection = (HttpURLConnection) ( new URL(BASE_URL + city + APP_ID)).openConnection();
+            connection = (HttpURLConnection) (new URL(BASE_URL + city + APP_ID + "&units=metric")).openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.setDoOutput(true);

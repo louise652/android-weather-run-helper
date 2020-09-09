@@ -18,19 +18,14 @@
             android:layout_height="wrap_content"
             android:textColor="#990000">
         </TextView>
+
+
         <!-- Image weather condition -->
         <ImageView android:id="@+id/condIcon"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:contentDescription="@string/weatherimage" />
 
-        <TextView
-            android:id="@+id/temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            android:textSize="130sp">
-        </TextView>
 
         <TextView
             android:id="@+id/weatherDetails"

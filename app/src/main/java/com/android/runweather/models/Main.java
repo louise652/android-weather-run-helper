@@ -12,16 +12,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
-/*
-  Representation of a WeatherVO returned from the weather API
- */
-public class WeatherVO {
-    public java.util.List<List> list;
-    public String cod;
+public class Main {
+    public double temp;
+    public int humidity;
+    public double feels_like;
 }
-
-
