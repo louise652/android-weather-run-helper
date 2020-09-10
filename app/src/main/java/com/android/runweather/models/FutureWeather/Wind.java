@@ -1,4 +1,4 @@
-package com.android.runweather.models;
+package com.android.runweather.models.FutureWeather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -14,14 +14,9 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-/*
-  Representation of a WeatherVO returned from the weather API
- */
-public class WeatherResultVO {
-    public java.util.List<List> list;
-    public String cod;
+@ToString
+public class Wind {
+    public double speed;
+    public int deg;
 }
-
-

@@ -1,4 +1,4 @@
-package com.android.runweather.models;
+package com.android.runweather.models.CurrentWeather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -9,17 +9,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Weather {
-    public String main;
-    public int id;
-    public String icon;
-    public String description;
+public class Main {
+    public double temp;
+    public double feels_like;
+    public double temp_min;
+    public double temp_max;
 }

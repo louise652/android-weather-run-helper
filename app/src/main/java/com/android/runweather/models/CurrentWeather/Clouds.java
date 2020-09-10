@@ -1,4 +1,4 @@
-package com.android.runweather.models;
+package com.android.runweather.models.CurrentWeather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -11,13 +11,11 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Main {
-    public double temp;
-    public int humidity;
-    public double feels_like;
+public class Clouds {
+    public int all; //cloud coverage??
 }

@@ -9,13 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.runweather.R;
 import com.android.runweather.interfaces.AsyncResponse;
-import com.android.runweather.models.List;
-import com.android.runweather.models.WeatherResultVO;
-import com.android.runweather.models.WeatherUIListVO;
-import com.android.runweather.models.WeatherUIVO;
-import com.android.runweather.tasks.WeatherTask;
+import com.android.runweather.models.CurrentWeather.CurrentWeatherResultVO;
+import com.android.runweather.models.FutureWeather.FutureWeatherResultVO;
+import com.android.runweather.tasks.CurrentWeatherTask;
+import com.android.runweather.tasks.FutureWeatherTask;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -24,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class ResultActivity extends AppCompatActivity implements AsyncResponse {
 
     ImageView image;
-    TextView cityText, weatherDetails;
+    TextView cityText, currentWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,54 +32,26 @@ public class ResultActivity extends AppCompatActivity implements AsyncResponse {
         //inflate the UI components
         image = findViewById(R.id.condIcon);
         cityText = findViewById(R.id.cityText);
-        weatherDetails = findViewById(R.id.weatherDetails);
+        currentWeather = findViewById(R.id.currentDetails);
 
         //get the city from the main activity and set the text box
         Intent intent = getIntent();
         String city = intent.getStringExtra("city");
 
         cityText.setText(city);
-        WeatherTask task = new WeatherTask();
-        task.execute(city);
+        FutureWeatherTask forecastTask = new FutureWeatherTask();
+        CurrentWeatherTask currentTask = new CurrentWeatherTask();
+        currentTask.execute(city);
+        forecastTask.execute(city);
         StringBuilder sb = new StringBuilder();
 
         try {
-            WeatherResultVO weather = task.get();
-            java.util.List<WeatherUIVO> itemList = new ArrayList();
+            FutureWeatherResultVO forecastList = forecastTask.get();
+            CurrentWeatherResultVO currentWeather = currentTask.get();
 
-            for (int i = 0; i < 9; i++) { //only need 3 hour forecasts for next 24 hours (8 entries * 3hrs)
-
-                WeatherUIVO item = new WeatherUIVO();
-                List s = weather.getList().get(i);
-
-                item.setTime(s.getDt_txt());
-                item.setOverall(s.getWeather().get(0).getMain());
-                item.setDetail(s.getWeather().get(0).getDescription());
-                item.setIcon(s.getWeather().get(0).getIcon());
-                item.setId(s.getWeather().get(0).getId());
-
-                if (s.getRain() != null && !((Double) s.getRain().get_3h()).isNaN()) {
-                    item.setRain(s.getRain().get_3h());
-                }
-
-                item.setWindDeg((s.getWind().getDeg()));
-                item.setWindSpeed(s.getWind().getSpeed());
-
-                item.setClouds(s.getClouds().getAll());
-
-                item.setTemp(s.getMain().getTemp());
-                item.setHumidity(s.getMain().getHumidity());
-                item.setFeeltemp(s.getMain().getFeels_like());
-
-                sb.append(item.toString() + "\n\n");
-                System.out.println("Entry " + i + ": " + item.toString());
-
-                itemList.add(item);
-            }
-
-            WeatherUIListVO uiItemList = new WeatherUIListVO();
-            uiItemList.setWeatherUIVO(itemList);
-            weatherDetails.setText(sb);
+            System.out.println("Current act: " + currentWeather.toString());
+            System.out.println("Forecast act: " + forecastList.toString());
+            this.currentWeather.setText(currentWeather.toString());
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

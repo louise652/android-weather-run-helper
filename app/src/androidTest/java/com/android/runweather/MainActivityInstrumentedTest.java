@@ -9,7 +9,6 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import com.android.runweather.Utils.UiAutomatorUtils;
 import com.android.runweather.activities.MainActivity;
-import com.android.runweather.models.WeatherResultVO;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -34,15 +33,6 @@ import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissio
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MainActivityInstrumentedTest {
-
-    public static final WeatherResultVO[] WEATHER = new WeatherResultVO[]{
-            new WeatherResultVO("1598562000",
-                    "Description",
-                    15.0,
-                    17.2,
-                    33,
-                    10.3,
-                    500)};
 
 
     @Rule

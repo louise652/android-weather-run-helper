@@ -1,7 +1,6 @@
-package com.android.runweather.models;
+package com.android.runweather.models.FutureWeather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,15 +9,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @Getter
 @Setter
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
-public class Rain {
-    @JsonProperty("3h")
-    public double _3h; //decimal chance of rain (null if no rain forecast)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Weather {
+    public String main;
+    public int id;
+    public String icon;
+    public String description;
 }
