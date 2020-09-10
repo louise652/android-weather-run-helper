@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import com.android.runweather.clients.WeatherClient;
 import com.android.runweather.interfaces.AsyncResponse;
-import com.android.runweather.models.WeatherVO;
+import com.android.runweather.models.WeatherResultVO;
 import com.android.runweather.utils.WeatherParser;
 
 import org.json.JSONException;
@@ -12,13 +12,13 @@ import org.json.JSONException;
 /**
  * See https://github.com/survivingwithandroid/Swa-app/blob/master/WeatherApp/src/com/survivingwithandroid/weatherapp/JSONWeatherParser.java
  */
-public class WeatherTask extends AsyncTask<String, Void, WeatherVO> {
+public class WeatherTask extends AsyncTask<String, Void, WeatherResultVO> {
 
     public AsyncResponse delegate;
 
     @Override
-    protected WeatherVO doInBackground(String... params) {
-        WeatherVO weather = new WeatherVO();
+    protected WeatherResultVO doInBackground(String... params) {
+        WeatherResultVO weather = new WeatherResultVO();
         String data = ((new WeatherClient()).getWeather(params[0]));
         System.out.println("Result: " + data);
         try {

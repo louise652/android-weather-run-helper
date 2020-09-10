@@ -1,6 +1,5 @@
 package com.android.runweather;
 
-import android.view.View;
 import android.widget.Button;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -10,7 +9,7 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import com.android.runweather.Utils.UiAutomatorUtils;
 import com.android.runweather.activities.MainActivity;
-import com.android.runweather.models.WeatherVO;
+import com.android.runweather.models.WeatherResultVO;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -36,8 +35,8 @@ import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissio
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MainActivityInstrumentedTest {
 
-    public static final WeatherVO[] WEATHER = new WeatherVO[]{
-            new WeatherVO("1598562000",
+    public static final WeatherResultVO[] WEATHER = new WeatherResultVO[]{
+            new WeatherResultVO("1598562000",
                     "Description",
                     15.0,
                     17.2,
@@ -84,7 +83,7 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.manual_container)).check(matches(isDisplayed()));
         onView(withId(R.id.autocomplete_fragment)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_weather)).check(matches(isDisplayed()));
-        onView(withId(R.id.btn_weather)).check(matches(CoreMatchers.<View>instanceOf(Button.class)));
+        onView(withId(R.id.btn_weather)).check(matches(CoreMatchers.instanceOf(Button.class)));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.manual_container)).check(matches(isDisplayed()));
         onView(withId(R.id.autocomplete_fragment)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_weather)).check(matches(isDisplayed()));
-        onView(withId(R.id.btn_weather)).check(matches(CoreMatchers.<View>instanceOf(Button.class)));
+        onView(withId(R.id.btn_weather)).check(matches(CoreMatchers.instanceOf(Button.class)));
     }
 
 }

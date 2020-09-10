@@ -19,7 +19,7 @@ import lombok.ToString;
 /*
   Representation of a WeatherVO returned from the weather API
  */
-public class WeatherVO {
+public class WeatherResultVO {
     public java.util.List<List> list;
     public String cod;
 }

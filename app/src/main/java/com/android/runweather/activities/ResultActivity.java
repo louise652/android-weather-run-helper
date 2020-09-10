@@ -10,27 +10,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.runweather.R;
 import com.android.runweather.interfaces.AsyncResponse;
 import com.android.runweather.models.List;
-import com.android.runweather.models.WeatherVO;
+import com.android.runweather.models.WeatherResultVO;
+import com.android.runweather.models.WeatherUIListVO;
+import com.android.runweather.models.WeatherUIVO;
 import com.android.runweather.tasks.WeatherTask;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Activity displays the results of the call to the weather API based on user location
  */
 public class ResultActivity extends AppCompatActivity implements AsyncResponse {
-    public String time;
-    public String overall;
-    public String detail;
-    public String icon;
-    public int id;
-    public double rain;
-    public int windDeg;
-    public double windSpeed;
-    public int clouds;
-    public double temp;
-    public int humidity;
-    public double feeltemp;
+
     ImageView image;
     TextView cityText, weatherDetails;
 
@@ -52,38 +44,43 @@ public class ResultActivity extends AppCompatActivity implements AsyncResponse {
         WeatherTask task = new WeatherTask();
         task.execute(city);
         StringBuilder sb = new StringBuilder();
+
         try {
-            String st;
-            WeatherVO weather = task.get();
+            WeatherResultVO weather = task.get();
+            java.util.List<WeatherUIVO> itemList = new ArrayList();
 
             for (int i = 0; i < 9; i++) { //only need 3 hour forecasts for next 24 hours (8 entries * 3hrs)
+
+                WeatherUIVO item = new WeatherUIVO();
                 List s = weather.getList().get(i);
 
-                time = (s.getDt_txt());
-                overall = (s.getWeather().get(0).getMain());
-                detail = (s.getWeather().get(0).getDescription());
-                icon = (s.getWeather().get(0).getIcon());
-                id = (s.getWeather().get(0).getId());
+                item.setTime(s.getDt_txt());
+                item.setOverall(s.getWeather().get(0).getMain());
+                item.setDetail(s.getWeather().get(0).getDescription());
+                item.setIcon(s.getWeather().get(0).getIcon());
+                item.setId(s.getWeather().get(0).getId());
 
                 if (s.getRain() != null && !((Double) s.getRain().get_3h()).isNaN()) {
-                    rain = (s.getRain().get_3h());
+                    item.setRain(s.getRain().get_3h());
                 }
 
-                windDeg = ((s.getWind().getDeg()));
-                windSpeed = (s.getWind().getSpeed());
+                item.setWindDeg((s.getWind().getDeg()));
+                item.setWindSpeed(s.getWind().getSpeed());
 
-                clouds = (s.getClouds().getAll());
+                item.setClouds(s.getClouds().getAll());
 
-                temp = (s.getMain().getTemp());
-                humidity = (s.getMain().getHumidity());
-                feeltemp = (s.getMain().getFeels_like());
+                item.setTemp(s.getMain().getTemp());
+                item.setHumidity(s.getMain().getHumidity());
+                item.setFeeltemp(s.getMain().getFeels_like());
 
-                sb.append("\nTIME " + time + " Overall: " + overall + " DEtail: " + detail + " ICON: " + icon + " id: " + id + " rain: " + rain + " winddeg: " + windDeg
-                        + " windspeed: " + windSpeed + " clouds: " + clouds + " temp: " + temp + " humiditiy: " + humidity + " feeltemp: " + feeltemp);
+                sb.append(item.toString() + "\n\n");
+                System.out.println("Entry " + i + ": " + item.toString());
 
-                System.out.println("Entry " + i + ": " + sb);
+                itemList.add(item);
             }
 
+            WeatherUIListVO uiItemList = new WeatherUIListVO();
+            uiItemList.setWeatherUIVO(itemList);
             weatherDetails.setText(sb);
         } catch (ExecutionException e) {
             e.printStackTrace();
