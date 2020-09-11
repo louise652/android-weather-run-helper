@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.android.runweather.R;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,7 +50,7 @@ public class LocationUtil {
      *
      * @return User town/city
      */
-    public String checkLocationPermission() {
+    public LatLng checkLocationPermission() {
         //check to see if we already have permission for location
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -64,9 +65,9 @@ public class LocationUtil {
      *
      * @return user town/city
      */
-    private String getUserLocationResult() {
+    private LatLng getUserLocationResult() {
 
-        String locationResult = "";
+        LatLng locationResult = null;
         //if we have permission, grab coords
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 
@@ -79,7 +80,15 @@ public class LocationUtil {
                     Location location = locationManager.getLastKnownLocation(provider);
 
             if (location != null) {
-                locationResult = extractTownFromLocation(location);
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+
+                //return getCityFromCoords(lat, lng);
+
+
+                locationResult = new LatLng(lat, lng);
+
+                // locationResult = extractTownFromLocation(location);
             }
 
         }
@@ -99,6 +108,8 @@ public class LocationUtil {
         double lng = location.getLongitude();
 
         return getCityFromCoords(lat, lng);
+
+
     }
 
     /**
@@ -108,7 +119,7 @@ public class LocationUtil {
      * @param lng Location longitude
      * @return user town/city
      */
-    private String getCityFromCoords(double lat, double lng) {
+    public String getCityFromCoords(double lat, double lng) {
 
         Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
         try {

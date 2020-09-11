@@ -1,6 +1,8 @@
-package com.android.runweather.models.FutureWeather;
+package com.android.runweather.models.Weather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
 @Data
@@ -17,9 +18,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Weather {
-    public String main;
-    public int id;
-    public String icon;
-    public String description;
+public class WeatherVO {
+    public double lat; //latitude
+    public double lon; //longitude
+    public String timezone;
+    public int timezone_offset; //shift in secs from UTC
+    public Current current;
+    public List<Hourly> hourly;
+
 }

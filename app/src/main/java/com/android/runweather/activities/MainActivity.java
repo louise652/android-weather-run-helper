@@ -12,6 +12,7 @@ import com.android.runweather.BuildConfig;
 import com.android.runweather.R;
 import com.android.runweather.utils.LocationUtil;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     String locationServiceString;
+    LatLng coords;
     View view;
     AutocompleteSupportFragment autocompleteFragment;
 
@@ -39,10 +41,13 @@ public class MainActivity extends AppCompatActivity {
         autocompleteFragment = initManualPlaceSelection();
 
         view = findViewById(R.id.manual_container);
-        locationServiceString = LocationUtil.getInstance(this).checkLocationPermission();
-        System.out.println(locationServiceString);
 
-        if (!locationServiceString.isEmpty()) {
+        coords = LocationUtil.getInstance(this).checkLocationPermission();
+        locationServiceString = LocationUtil.getInstance(this).getCityFromCoords(coords.latitude, coords.longitude);
+
+        System.out.println(coords);
+
+        if (coords != null) {
             autocompleteFragment.setText(locationServiceString);
 
         }
@@ -66,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 locationServiceString = place.getName();
+
+                coords = place.getLatLng();
+
             }
 
             @Override
@@ -96,11 +104,13 @@ public class MainActivity extends AppCompatActivity {
      * @param view Button to call the api with location
      */
     public void callWeather(View view) {
-        Toast.makeText(this, "Calling API with location: " + locationServiceString, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Calling API with location: " + coords, Toast.LENGTH_LONG).show();
 
         //Launch result activity and pass in City
         Intent resultIntent = new Intent(MainActivity.this, ResultActivity.class);
         resultIntent.putExtra("city", locationServiceString);
+        resultIntent.putExtra("lat", coords.latitude);
+        resultIntent.putExtra("lng", coords.longitude);
         MainActivity.this.startActivity(resultIntent);
 
     }

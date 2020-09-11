@@ -14,21 +14,21 @@ import java.net.URL;
  * HTTP call to the openweatherapi with the city passed in as a param
  */
 public class WeatherClient {
-    private static final String METRIC_UNITS = "&units=metric";
-    private static final String BASE_URL_WEATHER = "http://api.openweathermap.org/data/2.5/";
+    private static final String UNITS = "&units=metric";
+    private static final String BASE_URL_WEATHER = "https://api.openweathermap.org/data/2.5/";
     private static final String APP_ID = "&APPID=" + BuildConfig.WEATHER_KEY;
-    private static final String IMG_URL = "http://openweathermap.org/img/w/";
+    private static final String IMG_URL = "https://openweathermap.org/img/w/";
 
     /**
      * Calls out and returns either the current or future weather
      *
-     * @param city     Location to query
      * @param endpoint weather for current or forecast for future
      * @return endpoint
      */
-    public URL getURL(String city, String endpoint) {
+    public URL getURL(double lat, double lng, String endpoint) {
         try {
-            return new URL(BASE_URL_WEATHER + endpoint + "?q=" + city + APP_ID + METRIC_UNITS);
+            return new URL(BASE_URL_WEATHER + endpoint + "?lat=" + lat + "&lon=" + lng +
+                    "&exclude=minutely,daily" + APP_ID + UNITS);
         } catch (MalformedURLException e) {
 
             e.printStackTrace();
@@ -39,17 +39,18 @@ public class WeatherClient {
     /**
      * call out to the weather API and get back results in a string
      *
-     * @param city location to use
+     * @param lat latitude
+     * @param lng longitude
      * @return api result
      */
-    public String getWeather(String city, String endpoint) {
+    public String getWeather(double lat, double lng, String endpoint) {
         HttpURLConnection connection = null;
         InputStream inputStream = null;
 
         try {
 
             //make the connection
-            connection = (HttpURLConnection) (getURL(city, endpoint)).openConnection();
+            connection = (HttpURLConnection) (getURL(lat, lng, endpoint)).openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.setDoOutput(true);

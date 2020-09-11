@@ -3,7 +3,7 @@ package com.android.runweather.tasks;
 import android.os.AsyncTask;
 
 import com.android.runweather.clients.WeatherClient;
-import com.android.runweather.models.FutureWeather.FutureWeatherResultVO;
+import com.android.runweather.models.Weather.WeatherVO;
 import com.android.runweather.utils.WeatherParser;
 
 import org.json.JSONException;
@@ -11,19 +11,18 @@ import org.json.JSONException;
 /**
  * See https://github.com/survivingwithandroid/Swa-app/blob/master/WeatherApp/src/com/survivingwithandroid/weatherapp/JSONWeatherParser.java
  */
-public class FutureWeatherTask extends AsyncTask<String, Void, FutureWeatherResultVO> {
+public class WeatherTask extends AsyncTask<Double, Void, WeatherVO> {
 
 
     @Override
-    protected FutureWeatherResultVO doInBackground(String... params) {
-        FutureWeatherResultVO futureWeatherObject = new FutureWeatherResultVO();
+    protected WeatherVO doInBackground(Double... params) {
+        WeatherVO weatherObj = null;
 
-        String futureWeatherResult = ((new WeatherClient()).getWeather(params[0], "forecast"));
-        System.out.println("Future weather Result: " + futureWeatherResult);
+        String weatherResult = ((new WeatherClient()).getWeather(params[0], params[1], "onecall"));
 
         try {
 
-            futureWeatherObject = WeatherParser.getFutureWeather(futureWeatherResult);
+            weatherObj = WeatherParser.getWeather(weatherResult);
 
 
             // TODO: get appropiate weather icon
@@ -32,7 +31,7 @@ public class FutureWeatherTask extends AsyncTask<String, Void, FutureWeatherResu
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return futureWeatherObject;
+        return weatherObj;
 
     }
 
