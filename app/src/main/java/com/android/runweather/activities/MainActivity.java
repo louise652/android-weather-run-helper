@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view Button to call the api with location
      */
     public void callWeather(View view) {
-        Toast.makeText(this, "Getting weather results for " + city, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Getting weather results for " + locationServiceString, Toast.LENGTH_SHORT).show();
 
         //Launch result activity and pass in City
         Intent resultIntent = new Intent(MainActivity.this, ResultActivity.class);
