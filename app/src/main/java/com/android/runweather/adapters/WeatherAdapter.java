@@ -32,7 +32,7 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
         dt_txt.setText(Integer.toString(item.getDt()));
 
         TextView description = itemView.findViewById(R.id.description);
-        description.setText(item.getWeather().get(0).getMain() + ": " + item.getWeather().get(0).getDescription());
+        description.setText(item.getWeather().get(0).getDescription());
 
         TextView pop = itemView.findViewById(R.id.pop);
         pop.setText(String.valueOf(item.getPop()));

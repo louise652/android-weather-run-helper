@@ -18,7 +18,6 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Weather {
     public int id; //weather condition id
-    public String main; //overall weather
     public String description;//more detailed description
     public String icon; //icon id
 }
