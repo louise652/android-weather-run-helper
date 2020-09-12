@@ -31,43 +31,58 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        //inflate the UI components
-        image = findViewById(R.id.condIcon);
-        cityText = findViewById(R.id.cityText);
-        currentWeather = findViewById(R.id.currentDetails);
-
+        initComponents();
 
         //get the city from the main activity and set the text box
         Intent intent = getIntent();
         String city = intent.getStringExtra("city");
+        cityText.setText(city);
+
+        getWeatherResults(intent);
+
+
+    }
+
+    private void getWeatherResults(Intent intent) {
+        //get the coords from the main activity and use to call out to weather api
         Double lat = intent.getDoubleExtra("lat", 0.0);
         Double lng = intent.getDoubleExtra("lng", 0.0);
 
-
-        cityText.setText(city);
-        WeatherTask forecastTask = new WeatherTask();
-        forecastTask.execute(lat, lng);
-        StringBuilder sb = new StringBuilder();
-        WeatherVO forecastList = null;
+        //kick off async task
+        WeatherTask weatherTask = new WeatherTask();
+        weatherTask.execute(lat, lng);
+        WeatherVO weatherList = new WeatherVO();
 
         try {
-            forecastList = forecastTask.get();
+            //get result from async weather call
+            weatherList = weatherTask.get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            currentWeather.setText(forecastList.getCurrent().toString());
-
-            List<Hourly> s = forecastList.getHourly();
-
-            WeatherAdapter adapter = new WeatherAdapter(this, s);
-            setListAdapter(adapter);
-            lvWeather = getListView();
+            setWeatherResultViews(weatherList);
 
         }
+    }
 
+    private void setWeatherResultViews(WeatherVO weatherList) {
+        //todo: change current weather from displaying string to a nicer card view
+        currentWeather.setText(weatherList.getCurrent().toString());
 
+        //Set the hourly weather list of cards
+        List<Hourly> hourlyList = weatherList.getHourly();
+
+        //set the adapter to display each item
+        WeatherAdapter adapter = new WeatherAdapter(this, hourlyList);
+        setListAdapter(adapter);
+        lvWeather = getListView();
+    }
+
+    private void initComponents() {
+        image = findViewById(R.id.condIcon);
+        cityText = findViewById(R.id.cityText);
+        currentWeather = findViewById(R.id.currentDetails);
     }
 
     @Override

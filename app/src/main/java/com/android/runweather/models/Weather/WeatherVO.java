@@ -18,6 +18,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
+
+/**
+ * Openweather api object: see https://openweathermap.org/api/one-call-api for detailed description
+ * of fields
+ */
 public class WeatherVO {
     public double lat; //latitude
     public double lon; //longitude

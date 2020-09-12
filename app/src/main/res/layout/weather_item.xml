@@ -55,11 +55,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/pop"
-                android:text="Pop: " />
+                android:labelFor="@+id/precip"
+                android:text="Chance of precipitation: " />
 
             <TextView
-                android:id="@+id/pop"
+                android:id="@+id/precip"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>

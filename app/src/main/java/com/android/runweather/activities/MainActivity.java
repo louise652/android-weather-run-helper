@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
         coords = LocationUtil.getInstance(this).checkLocationPermission();
         locationServiceString = LocationUtil.getInstance(this).getCityFromCoords(coords.latitude, coords.longitude);
 
-        System.out.println(coords);
-
         if (coords != null) {
             autocompleteFragment.setText(locationServiceString);
 

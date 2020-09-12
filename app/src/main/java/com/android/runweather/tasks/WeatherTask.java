@@ -6,34 +6,29 @@ import com.android.runweather.clients.WeatherClient;
 import com.android.runweather.models.Weather.WeatherVO;
 import com.android.runweather.utils.WeatherParser;
 
-import org.json.JSONException;
 
 /**
  * See https://github.com/survivingwithandroid/Swa-app/blob/master/WeatherApp/src/com/survivingwithandroid/weatherapp/JSONWeatherParser.java
  */
 public class WeatherTask extends AsyncTask<Double, Void, WeatherVO> {
 
-
+    /**
+     * Call out to api vi client
+     *
+     * @param params longitude, latitude
+     * @return weather POJO
+     */
     @Override
     protected WeatherVO doInBackground(Double... params) {
-        WeatherVO weatherObj = null;
 
-        String weatherResult = ((new WeatherClient()).getWeather(params[0], params[1], "onecall"));
+        String weatherResult = ((new WeatherClient()).getWeather(params[0], params[1]));
 
-        try {
+        // TODO: get appropiate weather icon
+        //  weather.iconData = ((new WeatherClient()).getImage(weather.getIcon()));
 
-            weatherObj = WeatherParser.getWeather(weatherResult);
-
-
-            // TODO: get appropiate weather icon
-            //  weather.iconData = ((new WeatherClient()).getImage(weather.getIcon()));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return weatherObj;
+        //parse returned json String into POJO
+        return WeatherParser.getWeather(weatherResult);
 
     }
-
 
 }

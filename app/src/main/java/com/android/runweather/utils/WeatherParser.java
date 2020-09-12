@@ -4,14 +4,16 @@ package com.android.runweather.utils;
 import com.android.runweather.models.Weather.WeatherVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 
+/**
+ * Class uses Jackson to process the api result into a POJO
+ */
 public class WeatherParser {
-    public static WeatherVO getWeather(String data) throws JSONException {
-        WeatherVO forecasts = null;
+    public static WeatherVO getWeather(String data) {
+        WeatherVO forecasts = new WeatherVO();
         ObjectMapper mapper = new ObjectMapper();
+
         try {
             forecasts = mapper.readValue(data, WeatherVO.class);
 
