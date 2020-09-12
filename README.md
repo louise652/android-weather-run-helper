@@ -39,8 +39,8 @@ A Kanban board outlining future work and progress to date can be found [here](ht
 ## Screenshots
 Screenshots of UI as of 12th September 2020. Images will be updated as UI changes are committed.
 
-[1. Location screen](screenshots/ScreenshotLoc1.jpeg)
+[1. Location screen](screenshots/ScreenshotLoc1.png)
 
-[2. Location search](screenshots/ScreenshotLoc2.jpeg)
+[2. Location search](screenshots/ScreenshotLoc2.png)
 
-[3. Weather Result Screen](screenshots/ScreenshotWeather.jpeg)
+[3. Weather Result Screen](screenshots/ScreenshotWeather.png)
