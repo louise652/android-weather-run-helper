@@ -1,40 +1,27 @@
 package com.android.runweather.utils;
 
 
-import com.android.runweather.models.CurrentWeather.CurrentWeatherResultVO;
-import com.android.runweather.models.FutureWeather.FutureWeatherResultVO;
+import com.android.runweather.models.Weather.WeatherVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 
+/**
+ * Class uses Jackson to process the api result into a POJO
+ */
 public class WeatherParser {
-    public static FutureWeatherResultVO getFutureWeather(String data) throws JSONException {
-        FutureWeatherResultVO forecastList = new FutureWeatherResultVO();
+    public static WeatherVO getWeather(String data) {
+        WeatherVO forecasts = new WeatherVO();
         ObjectMapper mapper = new ObjectMapper();
+
         try {
-            forecastList = mapper.readValue(data, FutureWeatherResultVO.class);
+            forecasts = mapper.readValue(data, WeatherVO.class);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return forecastList;
-    }
-
-    public static CurrentWeatherResultVO getCurrentWeather(String data) throws JSONException {
-        CurrentWeatherResultVO currentWeather = new CurrentWeatherResultVO();
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            currentWeather = mapper.readValue(data, CurrentWeatherResultVO.class);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return currentWeather;
+        return forecasts;
     }
 
 

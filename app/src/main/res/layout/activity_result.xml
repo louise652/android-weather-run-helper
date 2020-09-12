@@ -7,31 +7,45 @@
     android:paddingRight="10dp"
     android:paddingTop="10dp"
     tools:context=".activities.ResultActivity"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
-        <!--city label -->
-        <TextView
-            android:id="@+id/cityText"
-            style="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#990000">
-        </TextView>
+    <!--city label -->
+    <TextView
+        android:id="@+id/cityText"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#990000"></TextView>
 
 
-        <!-- Image weather condition -->
-        <ImageView android:id="@+id/condIcon"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:contentDescription="@string/weatherimage" />
+    <!-- Image weather condition -->
+    <ImageView
+        android:id="@+id/condIcon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:contentDescription="@string/weatherimage" />
 
+    <TextView
+        style="?android:attr/textAppearanceMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current Weather"></TextView>
 
-        <TextView
-            android:id="@+id/currentDetails"
-            android:layout_width="wrap_content"
-            style="?android:attr/textAppearanceMedium"
-            android:layout_height="wrap_content">
-        </TextView>
+    <TextView
+        android:id="@+id/currentDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        style="?android:attr/textAppearanceMedium"
+        android:text="Weather Forecast"
+        android:layout_height="wrap_content"></TextView>
+
+    <ListView
+        android:id="@+id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
 </LinearLayout>
