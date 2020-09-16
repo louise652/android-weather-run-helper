@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import com.android.runweather.R;
 import com.android.runweather.models.Weather.Hourly;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -71,9 +72,9 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
         clouds.setText(Integer.toString(item.getClouds()));
         id.setText(Integer.toString(item.getWeather().get(0).getId()));
         icon.setText(item.getWeather().get(0).getIcon());
-        temp.setText(String.valueOf(item.getTemp()));
+        temp.setText(formatTemperature(item.getTemp()));
         humidity.setText(Integer.toString(item.getHumidity()));
-        feelsLike.setText(String.valueOf(item.getFeels_like()));
+        feelsLike.setText(formatTemperature(item.getFeels_like()));
         speed.setText(String.valueOf(item.getWind_speed()));
     }
 
@@ -90,9 +91,20 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
             date.setTime(longDate);
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.UK);
             return sdf.format(date);
-        }catch(NumberFormatException ex){
-              return "Error getting time";
+        } catch (NumberFormatException ex) {
+            return "Error getting time";
 
         }
+    }
+
+
+    public String formatTemperature(double temp) {
+
+        DecimalFormat df = new DecimalFormat("#.#");
+        df.format(temp);
+        String tempStr = df.format(temp) + "\u2103";
+        return tempStr;
+
+
     }
 }
