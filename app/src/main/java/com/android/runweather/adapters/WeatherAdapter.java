@@ -14,6 +14,8 @@ import com.android.runweather.R;
 import com.android.runweather.models.Weather.Hourly;
 import com.android.runweather.utils.FormattingUtils;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 /**
  * Adapter to display the hourly weather results
  */
@@ -60,12 +62,12 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
 
         //set UI text fields
         dt_txt.setText(FormattingUtils.formatDateTime(Integer.toString(item.getDt())));
-        description.setText(item.getWeather().get(0).getDescription());
-        precip.setText(Double.toString(item.getPop()));
-        clouds.setText(Integer.toString(item.getClouds()));
+        description.setText(WordUtils.capitalize(item.getWeather().get(0).getDescription()));
+        precip.setText(String.format("%s%%", item.getPop()));
+        clouds.setText(String.format("%s%%", item.getClouds()));
         temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
         feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));
-        speed.setText(String.valueOf(item.getWind_speed()));
+        speed.setText(String.format("%sm/s", item.wind_speed));
     }
 
 

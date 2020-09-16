@@ -11,7 +11,7 @@ public class FormattingUtilsTest {
 
     @Test
     public void testGetValidDateString() {
-        String expectedTime = "16:00";
+        String expectedTime = "4:00PM";
         String actualTime = FormattingUtils.formatDateTime("1599836400");
         assertEquals("should display valid time", expectedTime, actualTime);
     }

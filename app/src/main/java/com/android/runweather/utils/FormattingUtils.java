@@ -18,7 +18,7 @@ public class FormattingUtils {
             long longDate = Long.parseLong(strDate) * 1000;
             Date date = new Date();
             date.setTime(longDate);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.UK);
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mma", Locale.getDefault());
             return sdf.format(date);
         } catch (NumberFormatException ex) {
             return "Error getting time";

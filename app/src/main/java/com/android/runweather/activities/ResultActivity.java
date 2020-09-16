@@ -16,6 +16,8 @@ import com.android.runweather.models.Weather.WeatherVO;
 import com.android.runweather.tasks.WeatherTask;
 import com.android.runweather.utils.FormattingUtils;
 
+import org.apache.commons.lang3.text.WordUtils;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -25,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 public class ResultActivity extends ListActivity implements AsyncResponse {
 
     ImageView image;
-    TextView cityText, currentDate, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc;
+    TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     ListView lvWeather;
 
     @Override
@@ -82,25 +84,30 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
         Current currentWeatherVO = weatherList.getCurrent();
-        currentDate.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
+
+        String currentLabel = String.format("Current weather at %s", FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
+        currentWeatherLabel.setText(currentLabel);
+
         currentTemp.setText(FormattingUtils.formatTemperature(currentWeatherVO.getTemp()));
         currentFeels.setText(FormattingUtils.formatTemperature(currentWeatherVO.getFeels_like()));
-        sunrise.setText(currentWeatherVO.getSunrise());
-        sunset.setText(currentWeatherVO.getSunset());
-        clouds.setText(currentWeatherVO.getClouds());
-        currentDesc.setText(currentWeatherVO.getWeather().get(0).description);
+        sunrise.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunrise())));
+        sunset.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunset())));
+        clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
+        currentDesc.setText(WordUtils.capitalize(currentWeatherVO.getWeather().get(0).description));
+        currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
     }
 
     private void initComponents() {
         image = findViewById(R.id.condIcon);
+        currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
         cityText = findViewById(R.id.cityText);
-        currentDate = findViewById(R.id.currentDate);
         currentTemp = findViewById(R.id.currentTemp);
         currentFeels = findViewById(R.id.currentFeels);
         sunrise = findViewById(R.id.sunrise);
         sunset = findViewById(R.id.sunset);
         clouds = findViewById(R.id.clouds);
         currentDesc = findViewById(R.id.currentDesc);
+        currentWind = findViewById(R.id.currentWind);
     }
 
     @Override
