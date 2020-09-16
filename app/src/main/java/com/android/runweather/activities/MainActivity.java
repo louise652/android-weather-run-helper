@@ -38,20 +38,20 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        autocompleteFragment = initManualPlaceSelection();
-
-        view = findViewById(R.id.manual_container);
 
         coords = LocationUtil.getInstance(this).checkLocationPermission();
-        locationServiceString = LocationUtil.getInstance(this).getCityFromCoords(coords.latitude, coords.longitude);
 
-        if (coords != null) {
-            autocompleteFragment.setText(locationServiceString);
+        if (coords != null) { //we have successfully got our coords from locations ervice. No need for manual selection.
+            locationServiceString = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
+        } else {
 
+            //show the manual location selection
+            autocompleteFragment = initManualPlaceSelection();
+
+            view = findViewById(R.id.manual_container);
+            view.setVisibility(View.VISIBLE);
+            initManualLocation();
         }
-
-        initManualLocation();
-
     }
 
     /**
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private void initManualLocation() {
 
         // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         autocompleteFragment.setHint(getString(R.string.location_hint));
 

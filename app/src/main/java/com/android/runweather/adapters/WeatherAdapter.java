@@ -63,7 +63,7 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
         //set UI text fields
         dt_txt.setText(FormattingUtils.formatDateTime(Integer.toString(item.getDt())));
         description.setText(WordUtils.capitalize(item.getWeather().get(0).getDescription()));
-        precip.setText(String.format("%s%%", item.getPop()));
+        precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
         clouds.setText(String.format("%s%%", item.getClouds()));
         temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
         feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));

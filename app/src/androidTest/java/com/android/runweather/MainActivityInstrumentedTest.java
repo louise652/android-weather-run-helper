@@ -31,6 +31,7 @@ import static com.android.runweather.Utils.UiAutomatorUtils.denyCurrentPermissio
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MainActivityInstrumentedTest {
 
@@ -47,12 +48,10 @@ public class MainActivityInstrumentedTest {
     }
 
 
-
-
     //https://blog.egorand.me/testing-runtime-permissions-lessons-learned/
     @Test
     public void a_shouldDisplayPermissionRequestDialogOnLoad() throws Exception {
-        //given the app is loaded
+        denyCurrentPermission(device);
 
         //then the location prompt will appear
         assertViewWithTextIsVisible(device, UiAutomatorUtils.TEXT_ALLOW);
