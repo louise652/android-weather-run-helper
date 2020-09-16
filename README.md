@@ -34,7 +34,7 @@ Future updates will include:
 * UI improvements for location selection
 
 ## Kanban Board
-A Kanban board outlining future work and progress to date can be found [here](https://trello.com/invite/b/GRX8n57o/81111a1c4ff6d23269a7bd6c9d4584ad/weather-run-app)
+A Kanban board outlining future work and progress to date can be found [here](https://trello.com/b/GRX8n57o/weather-run-app)
 
 ## Screenshots
 Screenshots of UI as of 12th September 2020. Images will be updated as UI changes are committed.
