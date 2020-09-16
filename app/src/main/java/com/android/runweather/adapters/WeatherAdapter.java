@@ -83,11 +83,16 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
      * @param strDate time since epoch
      * @return time
      */
-    private String getDateString(String strDate) {
-        long longDate = Long.parseLong(strDate) * 1000;
-        Date date = new Date();
-        date.setTime(longDate);
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.UK);
-        return sdf.format(date);
+    public String getDateString(String strDate) {
+        try {
+            long longDate = Long.parseLong(strDate) * 1000;
+            Date date = new Date();
+            date.setTime(longDate);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.UK);
+            return sdf.format(date);
+        }catch(NumberFormatException ex){
+              return "Error getting time";
+
+        }
     }
 }
