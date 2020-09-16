@@ -97,7 +97,7 @@ public class LocationUtil {
      * @param lng Location longitude
      * @return user town/city
      */
-    public String getCityFromCoords(double lat, double lng) {
+    public String getLocFromCoords(double lat, double lng) {
 
         Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
         try {
@@ -116,7 +116,7 @@ public class LocationUtil {
     private void showLocationPermissionPrompt() {
         // No permission. Show why we need it
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Manifest.permission.ACCESS_FINE_LOCATION) && activity.isFinishing()) {
             elicitLocationPermission();
         } else {
             // No explanation needed, we can request the permission.

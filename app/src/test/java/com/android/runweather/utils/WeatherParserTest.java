@@ -1,7 +1,6 @@
-package com.android.runweather.util;
+package com.android.runweather.utils;
 
 import com.android.runweather.models.Weather.WeatherVO;
-import com.android.runweather.utils.WeatherParser;
 
 import org.junit.Before;
 import org.junit.Test;

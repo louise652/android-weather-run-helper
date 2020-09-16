@@ -12,11 +12,9 @@ import androidx.annotation.NonNull;
 
 import com.android.runweather.R;
 import com.android.runweather.models.Weather.Hourly;
+import com.android.runweather.utils.FormattingUtils;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import org.apache.commons.lang3.text.WordUtils;
 
 /**
  * Adapter to display the hourly weather results
@@ -58,53 +56,19 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
         TextView description = itemView.findViewById(R.id.description);
         TextView precip = itemView.findViewById(R.id.precip);
         TextView clouds = itemView.findViewById(R.id.clouds);
-        TextView id = itemView.findViewById(R.id.id);
-        TextView icon = itemView.findViewById(R.id.icon);
         TextView temp = itemView.findViewById(R.id.temp);
-        TextView humidity = itemView.findViewById(R.id.humidity);
         TextView feelsLike = itemView.findViewById(R.id.feelsLike);
         TextView speed = itemView.findViewById(R.id.speed);
 
         //set UI text fields
-        dt_txt.setText(getDateString(Integer.toString(item.getDt())));
-        description.setText(item.getWeather().get(0).getDescription());
-        precip.setText(Double.toString(item.getPop()));
-        clouds.setText(Integer.toString(item.getClouds()));
-        id.setText(Integer.toString(item.getWeather().get(0).getId()));
-        icon.setText(item.getWeather().get(0).getIcon());
-        temp.setText(formatTemperature(item.getTemp()));
-        humidity.setText(Integer.toString(item.getHumidity()));
-        feelsLike.setText(formatTemperature(item.getFeels_like()));
-        speed.setText(String.valueOf(item.getWind_speed()));
-    }
-
-    /**
-     * Format the timestamp and get the time
-     *
-     * @param strDate time since epoch
-     * @return time
-     */
-    public String getDateString(String strDate) {
-        try {
-            long longDate = Long.parseLong(strDate) * 1000;
-            Date date = new Date();
-            date.setTime(longDate);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.UK);
-            return sdf.format(date);
-        } catch (NumberFormatException ex) {
-            return "Error getting time";
-
-        }
+        dt_txt.setText(FormattingUtils.formatDateTime(Integer.toString(item.getDt())));
+        description.setText(WordUtils.capitalize(item.getWeather().get(0).getDescription()));
+        precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
+        clouds.setText(String.format("%s%%", item.getClouds()));
+        temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
+        feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));
+        speed.setText(String.format("%sm/s", item.wind_speed));
     }
 
 
-    public String formatTemperature(double temp) {
-
-        DecimalFormat df = new DecimalFormat("#.#");
-        df.format(temp);
-        String tempStr = df.format(temp) + "\u2103";
-        return tempStr;
-
-
-    }
 }
