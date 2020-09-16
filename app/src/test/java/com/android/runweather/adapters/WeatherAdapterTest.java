@@ -42,4 +42,12 @@ public class WeatherAdapterTest {
 
         assertEquals("should display error", expectedTime, actualTime);
     }
+
+    @Test
+    public void testTempString() {
+        String expectedTemp = "22.2" + "\u2103";
+        String actual = weatherAdapter.formatTemperature(22.2345);
+
+        assertEquals("should format temp", expectedTemp, actual);
+    }
 }

@@ -15,7 +15,6 @@ import java.io.IOException;
 
 @RunWith(JUnit4.class)
 public class WeatherParserTest {
-    WeatherParser weatherParser;
     String data;
 
     @Before
