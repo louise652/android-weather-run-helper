@@ -10,9 +10,11 @@ import android.widget.TextView;
 import com.android.runweather.R;
 import com.android.runweather.adapters.WeatherAdapter;
 import com.android.runweather.interfaces.AsyncResponse;
+import com.android.runweather.models.Weather.Current;
 import com.android.runweather.models.Weather.Hourly;
 import com.android.runweather.models.Weather.WeatherVO;
 import com.android.runweather.tasks.WeatherTask;
+import com.android.runweather.utils.FormattingUtils;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -23,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 public class ResultActivity extends ListActivity implements AsyncResponse {
 
     ImageView image;
-    TextView cityText, currentWeather;
+    TextView cityText, currentDate, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc;
     ListView lvWeather;
 
     @Override
@@ -67,8 +69,7 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
     }
 
     private void setWeatherResultViews(WeatherVO weatherList) {
-        //todo: change current weather from displaying string to a nicer card view
-        currentWeather.setText(weatherList.getCurrent().toString());
+        setCurrentWeatherFields(weatherList);
 
         //Set the hourly weather list of cards
         List<Hourly> hourlyList = weatherList.getHourly();
@@ -79,10 +80,27 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
         lvWeather = getListView();
     }
 
+    private void setCurrentWeatherFields(WeatherVO weatherList) {
+        Current currentWeatherVO = weatherList.getCurrent();
+        currentDate.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
+        currentTemp.setText(FormattingUtils.formatTemperature(currentWeatherVO.getTemp()));
+        currentFeels.setText(FormattingUtils.formatTemperature(currentWeatherVO.getFeels_like()));
+        sunrise.setText(currentWeatherVO.getSunrise());
+        sunset.setText(currentWeatherVO.getSunset());
+        clouds.setText(currentWeatherVO.getClouds());
+        currentDesc.setText(currentWeatherVO.getWeather().get(0).description);
+    }
+
     private void initComponents() {
         image = findViewById(R.id.condIcon);
         cityText = findViewById(R.id.cityText);
-        currentWeather = findViewById(R.id.currentDetails);
+        currentDate = findViewById(R.id.currentDate);
+        currentTemp = findViewById(R.id.currentTemp);
+        currentFeels = findViewById(R.id.currentFeels);
+        sunrise = findViewById(R.id.sunrise);
+        sunset = findViewById(R.id.sunset);
+        clouds = findViewById(R.id.clouds);
+        currentDesc = findViewById(R.id.currentDesc);
     }
 
     @Override
