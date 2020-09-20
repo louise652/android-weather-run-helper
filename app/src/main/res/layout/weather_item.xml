@@ -7,6 +7,13 @@
     android:layout_gravity="center"
     android:orientation="horizontal"
     card_view:cardCornerRadius="4dp">
+    <!-- Image weather condition -->
+    <ImageView
+        android:id="@+id/condIconHourly"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="end"
+        android:contentDescription="@string/weatherimage" />
 
     <LinearLayout
         android:layout_width="match_parent"

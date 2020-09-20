@@ -1,4 +1,4 @@
-package com.android.runweather.models.Weather;
+package com.android.runweather.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,15 +8,14 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Hourly {
-
-    public int dt; //unix utc forecasted time
+public class Current {
+    public int dt; //current time unix UTC
+    public int sunrise; //sunrise unix utc
+    public int sunset; //sunset unix utc
     public double temp;
-    public double feels_like; //human perception pf temp
-    public int humidity;//humidity percent
+    public double feels_like; //human perception of weather
+    public int humidity; //humidity %
     public int clouds; //% cloudiness
     public double wind_speed;
-    public Double pop; //probability of precipitation
     public List<Weather> weather;
-
 }

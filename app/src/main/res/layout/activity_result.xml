@@ -19,12 +19,7 @@
         android:textColor="#990000" />
 
 
-    <!-- Image weather condition -->
-    <ImageView
-        android:id="@+id/condIcon"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:contentDescription="@string/weatherimage" />
+
 
     <TextView
         style="?android:attr/textAppearanceMedium"
@@ -36,11 +31,19 @@
         android:id="@+id/currentDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <!-- Image weather condition -->
+        <ImageView
+            android:id="@+id/condIcon"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="end"
+            android:contentDescription="@string/weatherimage" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
