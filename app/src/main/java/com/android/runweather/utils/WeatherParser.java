@@ -1,7 +1,7 @@
 package com.android.runweather.utils;
 
 
-import com.android.runweather.models.Weather.WeatherVO;
+import com.android.runweather.models.WeatherVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;

@@ -10,9 +10,10 @@ import android.widget.TextView;
 import com.android.runweather.R;
 import com.android.runweather.adapters.WeatherAdapter;
 import com.android.runweather.interfaces.AsyncResponse;
-import com.android.runweather.models.Weather.Current;
-import com.android.runweather.models.Weather.Hourly;
-import com.android.runweather.models.Weather.WeatherVO;
+import com.android.runweather.models.Current;
+import com.android.runweather.models.Hourly;
+import com.android.runweather.models.WeatherVO;
+import com.android.runweather.tasks.ImageIconTask;
 import com.android.runweather.tasks.WeatherTask;
 import com.android.runweather.utils.FormattingUtils;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class ResultActivity extends ListActivity implements AsyncResponse {
 
-    ImageView image;
+    ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     ListView lvWeather;
 
@@ -54,12 +55,14 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
 
         //kick off async task
         WeatherTask weatherTask = new WeatherTask();
+
         weatherTask.execute(lat, lng);
         WeatherVO weatherList = new WeatherVO();
 
         try {
             //get result from async weather call
             weatherList = weatherTask.get();
+
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -85,6 +88,18 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
     private void setCurrentWeatherFields(WeatherVO weatherList) {
         Current currentWeatherVO = weatherList.getCurrent();
 
+        //kick off task to get icon for current weather
+        ImageIconTask iconTask = new ImageIconTask();
+        iconTask.execute(currentWeatherVO.getWeather().get(0).getIcon());
+
+        try {
+            currentImg.setImageDrawable(iconTask.get());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         String currentLabel = String.format("Current weather at %s", FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
         currentWeatherLabel.setText(currentLabel);
 
@@ -98,7 +113,7 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
     }
 
     private void initComponents() {
-        image = findViewById(R.id.condIcon);
+        currentImg = findViewById(R.id.condIcon);
         currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
         cityText = findViewById(R.id.cityText);
         currentTemp = findViewById(R.id.currentTemp);

@@ -1,4 +1,4 @@
-package com.android.runweather.models.Weather;
+package com.android.runweather.models;
 
 import java.util.List;
 

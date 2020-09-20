@@ -1,9 +1,10 @@
 package com.android.runweather.clients;
 
+import android.graphics.drawable.Drawable;
+
 import com.android.runweather.BuildConfig;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -18,7 +19,7 @@ public class WeatherClient {
     private static final String UNITS = "&units=metric";
     private static final String BASE_URL_WEATHER = "https://api.openweathermap.org/data/2.5/onecall";
     private static final String APP_ID = "&APPID=" + BuildConfig.WEATHER_KEY;
-    private static final String IMG_URL = "https://openweathermap.org/img/w/";
+    private static final String IMG_URL = "https://openweathermap.org/img/wn/";
 
     /**
      * Calls out and returns either the current or future weather
@@ -46,13 +47,12 @@ public class WeatherClient {
      * @return api result
      */
     public String getWeather(double lat, double lng) {
-        HttpURLConnection connection = null;
-        InputStream inputStream = null;
+        InputStream inputStream;
 
         try {
 
             //make the connection
-            connection = (HttpURLConnection) (getURL(lat, lng)).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) (getURL(lat, lng)).openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -62,24 +62,15 @@ public class WeatherClient {
             StringBuilder sb = new StringBuilder();
             inputStream = connection.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null)
-                sb.append(line + "\r\n");
+                sb.append(line).append("\r\n");
 
             inputStream.close();
             connection.disconnect();
             return sb.toString();
         } catch (Throwable t) {
             t.printStackTrace();
-        } finally {
-            try {
-                inputStream.close();
-            } catch (Throwable t) {
-            }
-            try {
-                connection.disconnect();
-            } catch (Throwable t) {
-            }
         }
 
         return null;
@@ -92,36 +83,13 @@ public class WeatherClient {
      * @param code (meteorology)
      * @return byte array of image
      */
-    public byte[] getImage(String code) {
-        HttpURLConnection connection = null;
-        InputStream stream = null;
-        try {
-            connection = (HttpURLConnection) (new URL(IMG_URL + code)).openConnection();
-            connection.setRequestMethod("GET");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.connect();
+    public Drawable getImage(String code) {
+        try (InputStream stream = (InputStream) new URL(IMG_URL + code + ".png").getContent()) {
 
-            // Let's read the response
-            stream = connection.getInputStream();
-            byte[] buffer = new byte[1024];
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            return Drawable.createFromStream(stream, "src");
 
-            while (stream.read(buffer) != -1)
-                baos.write(buffer);
-
-            return baos.toByteArray();
         } catch (Throwable t) {
             t.printStackTrace();
-        } finally {
-            try {
-                stream.close();
-            } catch (Throwable t) {
-            }
-            try {
-                connection.disconnect();
-            } catch (Throwable t) {
-            }
         }
 
         return null;

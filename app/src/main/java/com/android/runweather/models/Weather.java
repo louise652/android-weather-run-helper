@@ -1,4 +1,4 @@
-package com.android.runweather.models.Weather;
+package com.android.runweather.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

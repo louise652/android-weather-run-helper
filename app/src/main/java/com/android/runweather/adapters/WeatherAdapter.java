@@ -2,19 +2,24 @@ package com.android.runweather.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.android.runweather.R;
-import com.android.runweather.models.Weather.Hourly;
+import com.android.runweather.models.Hourly;
+import com.android.runweather.tasks.ImageIconTask;
 import com.android.runweather.utils.FormattingUtils;
 
 import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Adapter to display the hourly weather results
@@ -51,6 +56,10 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
     @SuppressLint("SetTextI18n")
     private void initAndSetWeatherListItem(Hourly item, View itemView) {
 
+        ImageIconTask icontask = new ImageIconTask();
+        icontask.execute(item.getWeather().get(0).getIcon());
+
+
         //instantiate UI components
         TextView dt_txt = itemView.findViewById(R.id.dt_txt);
         TextView description = itemView.findViewById(R.id.description);
@@ -60,6 +69,20 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
         TextView feelsLike = itemView.findViewById(R.id.feelsLike);
         TextView speed = itemView.findViewById(R.id.speed);
 
+        ImageView img = itemView.findViewById(R.id.condIconHourly);
+
+        //get icon for weather condition
+        try {
+            Drawable d = icontask.get();
+            //set Img
+            img.setBackground(d);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         //set UI text fields
         dt_txt.setText(FormattingUtils.formatDateTime(Integer.toString(item.getDt())));
         description.setText(WordUtils.capitalize(item.getWeather().get(0).getDescription()));
@@ -68,6 +91,8 @@ public class WeatherAdapter extends ArrayAdapter<Hourly> {
         temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
         feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));
         speed.setText(String.format("%sm/s", item.wind_speed));
+
+
     }
 
 

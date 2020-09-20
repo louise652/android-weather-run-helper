@@ -3,7 +3,7 @@ package com.android.runweather.tasks;
 import android.os.AsyncTask;
 
 import com.android.runweather.clients.WeatherClient;
-import com.android.runweather.models.Weather.WeatherVO;
+import com.android.runweather.models.WeatherVO;
 import com.android.runweather.utils.WeatherParser;
 
 
@@ -22,9 +22,6 @@ public class WeatherTask extends AsyncTask<Double, Void, WeatherVO> {
     protected WeatherVO doInBackground(Double... params) {
 
         String weatherResult = ((new WeatherClient()).getWeather(params[0], params[1]));
-
-        // TODO: get appropiate weather icon
-        //  weather.iconData = ((new WeatherClient()).getImage(weather.getIcon()));
 
         //parse returned json String into POJO
         return WeatherParser.getWeather(weatherResult);
