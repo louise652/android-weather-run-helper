@@ -7,4 +7,12 @@
     <string name="place_error">Error: </string>
     <string name="location_hint">Enter your location</string>
     <string name="weatherimage">weatherImage</string>
+    <string name="weather_forecast">Weather Forecast</string>
+    <string name="wind_speed">Wind Speed:</string>
+    <string name="description">Description:</string>
+    <string name="temp">Temp:</string>
+    <string name="feels_like">Feels Like:</string>
+    <string name="sunrise">Sunrise:</string>
+    <string name="sunset">Sunset:</string>
+    <string name="cloud_coverage">Cloud Coverage:</string>
 </resources>

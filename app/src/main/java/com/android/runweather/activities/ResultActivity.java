@@ -1,11 +1,14 @@
 package com.android.runweather.activities;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.runweather.R;
 import com.android.runweather.adapters.WeatherAdapter;
@@ -25,11 +28,12 @@ import java.util.concurrent.ExecutionException;
 /**
  * Activity displays the results of the call to the weather API based on user location
  */
-public class ResultActivity extends ListActivity implements AsyncResponse {
+public class ResultActivity extends Activity implements AsyncResponse {
 
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
-    ListView lvWeather;
+    RecyclerView mRecyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +83,29 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
         //Set the hourly weather list of cards
         List<Hourly> hourlyList = weatherList.getHourly();
 
-        //set the adapter to display each item
-        WeatherAdapter adapter = new WeatherAdapter(this, hourlyList);
-        setListAdapter(adapter);
-        lvWeather = getListView();
+        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
+        mRecyclerView.setAdapter(mainRecyclerAdapter);
+
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+            }
+
+
+            //set the adapter to display each item
+
+
+            //WeatherAdapter adapter = new WeatherAdapter(this, hourlyList);
+            //recyclerView.setAdapter(adapter);
+
+            // setListAdapter(adapter);
+            //lvWeather = getListView();
+        });
     }
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
@@ -113,6 +136,12 @@ public class ResultActivity extends ListActivity implements AsyncResponse {
     }
 
     private void initComponents() {
+
+        mRecyclerView = findViewById(R.id.recyclerview_rootview);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
         currentImg = findViewById(R.id.condIcon);
         currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
         cityText = findViewById(R.id.cityText);

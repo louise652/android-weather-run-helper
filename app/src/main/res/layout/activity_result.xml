@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/currentDesc"
-                    android:text="Description: " />
+                    android:text="@string/description" />
 
                 <TextView
                     android:id="@+id/currentDesc"
@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/currentTemp"
-                    android:text="Temp: " />
+                    android:text="@string/temp" />
 
                 <TextView
                     android:id="@+id/currentTemp"
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/currentFeels"
-                    android:text="Feels Like: " />
+                    android:text="@string/feels_like" />
 
                 <TextView
                     android:id="@+id/currentFeels"
@@ -105,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/sunrise"
-                    android:text="Sunrise: " />
+                    android:text="@string/sunrise" />
 
                 <TextView
                     android:id="@+id/sunrise"
@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/sunset"
-                    android:text="Sunset: " />
+                    android:text="@string/sunset" />
 
                 <TextView
                     android:id="@+id/sunset"
@@ -139,7 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/clouds"
-                    android:text="Clouds: " />
+                    android:text="@string/cloud_coverage" />
 
                 <TextView
                     android:id="@+id/clouds"
@@ -156,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/currentWind"
-                    android:text="Wind Speed: " />
+                    android:text="@string/wind_speed" />
 
                 <TextView
                     android:id="@+id/currentWind"
@@ -169,14 +169,15 @@
     <Space
         android:layout_width="1dp"
         android:layout_height="10dp" />
+
     <TextView
         android:layout_width="wrap_content"
         style="?android:attr/textAppearanceMedium"
-        android:text="Weather Forecast"
+        android:text="@string/weather_forecast"
         android:layout_height="wrap_content" />
 
-    <ListView
-        android:id="@+id/android:list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_rootview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

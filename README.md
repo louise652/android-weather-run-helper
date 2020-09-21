@@ -17,7 +17,7 @@ Follow [these instructions](https://developers.google.com/places/web-service/get
 placesKey=YOUR_API_KEY
 
 
-To connect to the openweatherAPI, ypu need to register and get a free api key, follow [these instructions.](https://openweathermap.org/appid)
+To connect to the openweatherAPI, you need to register and get a free api key, follow [these instructions.](https://openweathermap.org/appid)
 Add the following line into the gradle.properties file.
 
 weatherKey=YOUR_API_KEY
