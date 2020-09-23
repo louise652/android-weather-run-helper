@@ -1,16 +1,16 @@
 package com.android.runweather.adapters;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.runweather.R;
 import com.android.runweather.models.Hourly;
@@ -19,81 +19,100 @@ import com.android.runweather.utils.FormattingUtils;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Adapter to display the hourly weather results
+ * Adapter to display hourly weather info
  */
-public class WeatherAdapter extends ArrayAdapter<Hourly> {
-    Context context;
-    java.util.List<Hourly> items;
 
-    public WeatherAdapter(Context context, java.util.List<Hourly> items) {
-        super(context, R.layout.weather_item, items);
+public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
+    private List<Hourly> items;
+    Context context;
+
+    public WeatherAdapter(Context context, List<Hourly> items) {
         this.context = context;
         this.items = items;
     }
 
+    /**
+     * Get the view
+     * @param parent result view
+     * @param viewType
+     * @return item view
+     */
+
     @NonNull
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        Hourly item = getItem(position);
+    public WeatherAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        View convertView = inflater.inflate(R.layout.weather_item, parent, false);
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.weather_item, parent, false);
-
-        initAndSetWeatherListItem(item, itemView);
-
-        return itemView;
+        return new ViewHolder(convertView);
     }
 
-    /**
-     * Instantiates the HourlyWeather UI components and sets the values
-     *
-     * @param item     hourly weather object
-     * @param itemView UI view
-     */
-    @SuppressLint("SetTextI18n")
-    private void initAndSetWeatherListItem(Hourly item, View itemView) {
+    @Override
+    public void onBindViewHolder(@NonNull WeatherAdapter.ViewHolder holder, int position) {
+        Hourly item = items.get(position);
 
-        ImageIconTask icontask = new ImageIconTask();
-        icontask.execute(item.getWeather().get(0).getIcon());
+        //kick off an async task to get weather image
+        ImageIconTask iconTask = new ImageIconTask();
+        iconTask.execute(item.getWeather().get(0).getIcon());
 
 
-        //instantiate UI components
-        TextView dt_txt = itemView.findViewById(R.id.dt_txt);
-        TextView description = itemView.findViewById(R.id.description);
-        TextView precip = itemView.findViewById(R.id.precip);
-        TextView clouds = itemView.findViewById(R.id.clouds);
-        TextView temp = itemView.findViewById(R.id.temp);
-        TextView feelsLike = itemView.findViewById(R.id.feelsLike);
-        TextView speed = itemView.findViewById(R.id.speed);
-
-        ImageView img = itemView.findViewById(R.id.condIconHourly);
+        //set display fields with the model data
+        String time = FormattingUtils.formatDateTime(Integer.toString(item.getDt()));
+        String description = WordUtils.capitalize(item.getWeather().get(0).getDescription());
+        holder.description.setText(String.format("%s- %s", time, description));
+        holder.precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
+        holder.clouds.setText(String.format("%s%%", item.getClouds()));
+        holder.temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
+        holder.feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));
+        holder.speed.setText(String.format("%sm/s", item.wind_speed));
 
         //get icon for weather condition
         try {
-            Drawable d = icontask.get();
+            Drawable drawable = iconTask.get();
             //set Img
-            img.setBackground(d);
+            holder.img.setBackground(drawable);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+    }
 
-        //set UI text fields
-        dt_txt.setText(FormattingUtils.formatDateTime(Integer.toString(item.getDt())));
-        description.setText(WordUtils.capitalize(item.getWeather().get(0).getDescription()));
-        precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
-        clouds.setText(String.format("%s%%", item.getClouds()));
-        temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
-        feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));
-        speed.setText(String.format("%sm/s", item.wind_speed));
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
+        TextView description;
+        TextView precip;
+        TextView clouds;
+        TextView temp;
+        TextView feelsLike;
+        TextView speed;
+        View rootView;
+        ImageView img;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            rootView = itemView;
+            //instantiate UI components
+            description = itemView.findViewById(R.id.description);
+            precip = itemView.findViewById(R.id.precip);
+            clouds = itemView.findViewById(R.id.clouds);
+            temp = itemView.findViewById(R.id.temp);
+            feelsLike = itemView.findViewById(R.id.feelsLike);
+            speed = itemView.findViewById(R.id.speed);
+
+            img = itemView.findViewById(R.id.condIconHourly);
+        }
 
 
     }
-
-
 }
