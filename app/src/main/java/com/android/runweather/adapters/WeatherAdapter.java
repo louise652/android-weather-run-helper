@@ -22,6 +22,10 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Adapter to display hourly weather info
+ */
+
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
     private List<Hourly> items;
     Context context;
@@ -30,6 +34,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         this.context = context;
         this.items = items;
     }
+
+    /**
+     * Get the view
+     * @param parent result view
+     * @param viewType
+     * @return item view
+     */
 
     @NonNull
     @Override
@@ -44,11 +55,15 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
     public void onBindViewHolder(@NonNull WeatherAdapter.ViewHolder holder, int position) {
         Hourly item = items.get(position);
 
-        ImageIconTask icontask = new ImageIconTask();
-        icontask.execute(item.getWeather().get(0).getIcon());
+        //kick off an async task to get weather image
+        ImageIconTask iconTask = new ImageIconTask();
+        iconTask.execute(item.getWeather().get(0).getIcon());
 
-        holder.dt_txt.setText(FormattingUtils.formatDateTime(Integer.toString(item.getDt())));
-        holder.description.setText(WordUtils.capitalize(item.getWeather().get(0).getDescription()));
+
+        //set display fields with the model data
+        String time = FormattingUtils.formatDateTime(Integer.toString(item.getDt()));
+        String description = WordUtils.capitalize(item.getWeather().get(0).getDescription());
+        holder.description.setText(String.format("%s- %s", time, description));
         holder.precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
         holder.clouds.setText(String.format("%s%%", item.getClouds()));
         holder.temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
@@ -57,7 +72,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         //get icon for weather condition
         try {
-            Drawable drawable = icontask.get();
+            Drawable drawable = iconTask.get();
             //set Img
             holder.img.setBackground(drawable);
         } catch (ExecutionException e) {
@@ -75,8 +90,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-
-        TextView dt_txt;
         TextView description;
         TextView precip;
         TextView clouds;
@@ -90,7 +103,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
             super(itemView);
             rootView = itemView;
             //instantiate UI components
-            dt_txt = itemView.findViewById(R.id.dt_txt);
             description = itemView.findViewById(R.id.description);
             precip = itemView.findViewById(R.id.precip);
             clouds = itemView.findViewById(R.id.clouds);

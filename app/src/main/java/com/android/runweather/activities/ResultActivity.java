@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -85,7 +86,6 @@ public class ResultActivity extends Activity implements AsyncResponse {
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
         mRecyclerView.setAdapter(mainRecyclerAdapter);
-
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -96,15 +96,6 @@ public class ResultActivity extends Activity implements AsyncResponse {
 
             }
 
-
-            //set the adapter to display each item
-
-
-            //WeatherAdapter adapter = new WeatherAdapter(this, hourlyList);
-            //recyclerView.setAdapter(adapter);
-
-            // setListAdapter(adapter);
-            //lvWeather = getListView();
         });
     }
 

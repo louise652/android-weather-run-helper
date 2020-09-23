@@ -26,7 +26,6 @@ weatherKey=YOUR_API_KEY
 This is the first iteration of the app and it is under construction subject to frequent code updates.
 
 Future updates will include:
-* Displaying the forecasted weather cards in a horizontal carousel so the user can swipe left/right between them
 * Snapping the view to the card with the optimal weather conditions
 * Adding in recommendations for what to wear for each timeslot
 * Filters to refine the time range of results
@@ -36,7 +35,7 @@ Future updates will include:
 A Kanban board outlining future work and progress to date can be found [here](https://trello.com/b/GRX8n57o/weather-run-app)
 
 ## Screenshots
-Screenshots of UI as of 20th September 2020. Images will be updated as UI changes are committed.
+Screenshots of UI as of 23rd September 2020. Images will be updated as UI changes are committed.
 
 ![Location screen](screenshots/ScreenshotLoc1.png)
 
