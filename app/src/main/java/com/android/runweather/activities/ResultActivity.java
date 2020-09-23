@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.runweather.R;
@@ -18,8 +19,8 @@ import com.android.runweather.models.Hourly;
 import com.android.runweather.models.WeatherVO;
 import com.android.runweather.tasks.ImageIconTask;
 import com.android.runweather.tasks.WeatherTask;
-import com.android.runweather.utils.CirclePagerIndicatorDecoration;
 import com.android.runweather.utils.FormattingUtils;
+import com.android.runweather.utils.LinePagerIndicatorDecoration;
 
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -27,12 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+
 /**
  * Activity displays the results of the call to the weather API based on user location
  */
 public class ResultActivity extends Activity implements AsyncResponse {
 
-    public static final int TWENTY_FOUR = 24;
+    public static final int TWELVE = 12;
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
@@ -85,7 +87,7 @@ public class ResultActivity extends Activity implements AsyncResponse {
 
         //Set the hourly weather list of cards (max 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();
-        for (int result = 0; result < TWENTY_FOUR; result++) {
+        for (int result = 0; result < TWELVE; result++) {
             hourlyList.add(weatherList.getHourly().get(result));
 
         }
@@ -140,7 +142,13 @@ public class ResultActivity extends Activity implements AsyncResponse {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new CirclePagerIndicatorDecoration());
+
+        // add pager behavior
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerView);
+
+        // pager indicator
+        mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
 
         currentImg = findViewById(R.id.condIcon);
         currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
