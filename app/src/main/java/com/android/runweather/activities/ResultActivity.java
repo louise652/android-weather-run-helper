@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +22,7 @@ import com.android.runweather.utils.FormattingUtils;
 
 import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class ResultActivity extends Activity implements AsyncResponse {
 
+    public static final int TWENTY_FOUR = 24;
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
@@ -81,8 +82,14 @@ public class ResultActivity extends Activity implements AsyncResponse {
     private void setWeatherResultViews(WeatherVO weatherList) {
         setCurrentWeatherFields(weatherList);
 
-        //Set the hourly weather list of cards
-        List<Hourly> hourlyList = weatherList.getHourly();
+        //Set the hourly weather list of cards (max 24hours results)
+        List<Hourly> hourlyList = new ArrayList<>();
+        for (int result = 0; result < TWENTY_FOUR; result++) {
+            hourlyList.add(weatherList.getHourly().get(result));
+
+        }
+
+        // List<Hourly> hourlyList = weatherList.getHourly();
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
         mRecyclerView.setAdapter(mainRecyclerAdapter);
