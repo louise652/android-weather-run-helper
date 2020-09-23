@@ -18,6 +18,7 @@ import com.android.runweather.models.Hourly;
 import com.android.runweather.models.WeatherVO;
 import com.android.runweather.tasks.ImageIconTask;
 import com.android.runweather.tasks.WeatherTask;
+import com.android.runweather.utils.CirclePagerIndicatorDecoration;
 import com.android.runweather.utils.FormattingUtils;
 
 import org.apache.commons.lang3.text.WordUtils;
@@ -139,6 +140,7 @@ public class ResultActivity extends Activity implements AsyncResponse {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.addItemDecoration(new CirclePagerIndicatorDecoration());
 
         currentImg = findViewById(R.id.condIcon);
         currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
