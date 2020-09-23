@@ -97,7 +97,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         TextView feelsLike;
         TextView speed;
         View rootView;
-        ImageView img;
+        ImageView img, leftArrow, rightArrow;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,6 +111,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
             speed = itemView.findViewById(R.id.speed);
 
             img = itemView.findViewById(R.id.condIconHourly);
+
+
+            leftArrow = itemView.findViewById(R.id.leftArrow);
+            leftArrow.setImageResource(R.drawable.filled_left_arrow);
+
+            rightArrow = itemView.findViewById(R.id.rightArrow);
+            rightArrow.setImageResource(R.drawable.filled_right_arrow);
         }
 
 

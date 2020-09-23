@@ -87,6 +87,7 @@ public class ResultActivity extends Activity implements AsyncResponse {
         for (int result = 0; result < TWENTY_FOUR; result++) {
             hourlyList.add(weatherList.getHourly().get(result));
 
+
         }
 
         // List<Hourly> hourlyList = weatherList.getHourly();
@@ -150,6 +151,7 @@ public class ResultActivity extends Activity implements AsyncResponse {
         clouds = findViewById(R.id.clouds);
         currentDesc = findViewById(R.id.currentDesc);
         currentWind = findViewById(R.id.currentWind);
+
     }
 
     @Override
