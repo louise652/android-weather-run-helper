@@ -9,19 +9,17 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Objects;
+
 /**
  * Displays an indicator to show how many cards and current position in the forecast carousel
- * See https://github.com/bleeding182/recyclerviewItemDecorations/blob/master/app/src/main/java/com/github/bleeding182/recyclerviewdecorations/viewpager/ViewPagerActivity.java
+ * See https://github.com/bleeding182/recyclerviewItemDecorations
  */
 public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
-
-    /**
-     * Indicator stroke width.
-     */
-    private final float mIndicatorStrokeWidth = DP * 2;
 
     private static final float DP = Resources.getSystem().getDisplayMetrics().density;
 
@@ -29,16 +27,15 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
      * Height of the space the indicator takes up at the bottom of the view.
      */
     private final int mIndicatorHeight = (int) (DP * 16);
-    private int colorActive = 0xFFFFFFFF;
 
     /**
      * Indicator width.
      */
-    private final float mIndicatorItemLength = DP * 16;
+    private final float mIndicatorItemLength = DP * 12;
     /**
      * Padding between indicators.
      */
-    private final float mIndicatorItemPadding = DP * 4;
+    private final float mIndicatorItemPadding = DP * 8;
 
     /**
      * Some more natural animation interpolation
@@ -49,16 +46,17 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
 
     public LinePagerIndicatorDecoration() {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(mIndicatorStrokeWidth);
+        mPaint.setStrokeWidth(DP * 2);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setAntiAlias(true);
     }
 
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent,
+                           @NonNull RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
 
-        int itemCount = parent.getAdapter().getItemCount();
+        int itemCount = Objects.requireNonNull(parent.getAdapter()).getItemCount();
 
         // center horizontally, calculate width and subtract half from center
         float totalLength = mIndicatorItemLength * itemCount;
@@ -74,15 +72,21 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
 
         // find active page (which should be highlighted)
         LinearLayoutManager layoutManager = (LinearLayoutManager) parent.getLayoutManager();
-        int activePosition = layoutManager.findFirstVisibleItemPosition();
+        int activePosition = 0;
+        if (layoutManager != null) {
+            activePosition = layoutManager.findFirstVisibleItemPosition();
+        }
         if (activePosition == RecyclerView.NO_POSITION) {
             return;
         }
 
 // find offset of active page (if the user is scrolling)
-        final View activeChild = layoutManager.findViewByPosition(activePosition);
-        int left = activeChild.getLeft();
-        int width = activeChild.getWidth();
+        final View activeChild = layoutManager != null ?
+                layoutManager.findViewByPosition(activePosition) : null;
+        int left = activeChild != null ? activeChild.getLeft() : 0;
+
+        int width = activeChild != null ? activeChild.getWidth() : 0;
+
 
         // on swipe the active item will be positioned from [-width, 0]
         // interpolate offset for smooth animation
@@ -91,7 +95,8 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
         drawHighlights(c, indicatorStartX, indicatorPosY, activePosition, progress, itemCount);
     }
 
-    private void drawInactiveIndicators(Canvas c, float indicatorStartX, float indicatorPosY, int itemCount) {
+    private void drawInactiveIndicators(Canvas c, float indicatorStartX, float indicatorPosY,
+                                        int itemCount) {
         mPaint.setColor(Color.BLACK);
 
 // width of item indicator including padding
@@ -101,7 +106,8 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < itemCount; i++) {
             // draw the line for every item
             //c.drawCircle(start, indicatorPosY, start + mIndicatorItemLength,  mPaint);
-            c.drawLine(start, indicatorPosY, start + mIndicatorItemLength, indicatorPosY, mPaint);
+            c.drawLine(start, indicatorPosY, start + mIndicatorItemLength,
+                    indicatorPosY, mPaint);
             start += itemWidth;
         }
     }
@@ -137,7 +143,8 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
+                               @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         outRect.bottom = mIndicatorHeight;
     }
