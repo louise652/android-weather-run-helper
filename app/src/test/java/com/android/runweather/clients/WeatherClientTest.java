@@ -7,9 +7,9 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class WeatherClientTest {
 
-    private WeatherClient weatherClient = new WeatherClient();
-    double lat = 55.0;
-    double lng = 5.0;
+    private final WeatherClient weatherClient = new WeatherClient();
+    private final double lat = 55.0;
+    private final double lng = 5.0;
 
 
     @Test

@@ -22,13 +22,15 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static org.apache.commons.lang3.text.WordUtils.capitalize;
+
 /**
  * Adapter to display hourly weather info
  */
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
-    private List<Hourly> items;
-    Context context;
+    private final List<Hourly> items;
+    private final Context context;
 
     public WeatherAdapter(Context context, List<Hourly> items) {
         this.context = context;
@@ -38,7 +40,6 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
     /**
      * Get the view
      * @param parent result view
-     * @param viewType
      * @return item view
      */
 
@@ -62,7 +63,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         //set display fields with the model data
         String time = FormattingUtils.formatDateTime(Integer.toString(item.getDt()));
-        String description = WordUtils.capitalize(item.getWeather().get(0).getDescription());
+        String description = capitalize(item.getWeather().get(0).getDescription());
         holder.description.setText(String.format("%s- %s", time, description));
         holder.precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
         holder.clouds.setText(String.format("%s%%", item.getClouds()));
@@ -90,14 +91,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView description;
-        TextView precip;
-        TextView clouds;
-        TextView temp;
-        TextView feelsLike;
-        TextView speed;
-        View rootView;
-        ImageView img;
+        private final TextView description;
+        private final TextView precip;
+        private final TextView clouds;
+        private final TextView temp;
+        private final TextView feelsLike;
+        private final TextView speed;
+        private final View rootView;
+        private final ImageView img;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

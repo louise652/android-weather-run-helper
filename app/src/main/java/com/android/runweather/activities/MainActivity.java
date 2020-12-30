@@ -1,8 +1,6 @@
 package com.android.runweather.activities;
 
 import android.app.Activity;
-import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.runweather.R;
 import com.android.runweather.adapters.WeatherAdapter;
-import com.android.runweather.interfaces.AsyncResponse;
 import com.android.runweather.models.Current;
 import com.android.runweather.models.Hourly;
 import com.android.runweather.models.WeatherVO;
@@ -26,18 +23,18 @@ import com.android.runweather.utils.LinePagerIndicatorDecoration;
 import com.android.runweather.utils.LocationUtil;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 /**
  * Main activity which handles eliciting location service permission from the user and
  * displaying current/future weather conditions
  */
 
-public class MainActivity extends Activity implements AsyncResponse {
+public class MainActivity extends Activity {
 
     String city;
     LatLng coords;
@@ -45,7 +42,6 @@ public class MainActivity extends Activity implements AsyncResponse {
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
-    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +101,7 @@ public class MainActivity extends Activity implements AsyncResponse {
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
         mRecyclerView.setAdapter(mainRecyclerAdapter);
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             }
@@ -143,7 +139,7 @@ public class MainActivity extends Activity implements AsyncResponse {
             sunrise.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunrise())));
             sunset.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunset())));
             clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
-            currentDesc.setText(WordUtils.capitalize(currentWeatherVO.getWeather().get(0).description));
+            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(0).description));
             currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
 
             // pager indicator
@@ -173,12 +169,6 @@ public class MainActivity extends Activity implements AsyncResponse {
         currentDesc = findViewById(R.id.currentDesc);
         currentWind = findViewById(R.id.currentWind);
 
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    @Override
-    public void processFinish(String output) {
-
-
-    }
 }

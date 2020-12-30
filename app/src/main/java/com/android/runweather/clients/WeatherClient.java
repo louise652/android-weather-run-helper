@@ -24,7 +24,7 @@ public class WeatherClient {
     /**
      * Calls out and returns either the current or future weather
      *
-     * @param lat latitute
+     * @param lat latitude
      * @param lng longitude
      * @return endpoint
      */

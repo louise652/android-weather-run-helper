@@ -30,7 +30,7 @@ public class LocationUtil {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static LocationUtil locationUtil;
 
-    private Activity activity;
+    private final Activity activity;
 
 
     private LocationUtil(Activity activity) {

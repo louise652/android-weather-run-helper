@@ -4,12 +4,9 @@
     <string name="text_location_permission">Location is required to get the weather for your area.</string>
     <string name="grant_permission">Grant permission</string>
     <string name="deny">Deny</string>
-    <string name="place_error">Error: </string>
-    <string name="location_hint">Enter your location</string>
     <string name="weatherImage">weatherImage</string>
     <string name="weather_forecast">Weather Forecast</string>
     <string name="wind_speed">Wind Speed:\u0020</string>
-    <string name="description">Description:\u0020</string>
     <string name="temp">Temp:\u0020</string>
     <string name="feels_like">Feels Like:\u0020</string>
     <string name="sunrise">Sunrise:\u0020</string>

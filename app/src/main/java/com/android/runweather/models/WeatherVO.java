@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 
-/**
+/*
  * Openweather api object: see https://openweathermap.org/api/one-call-api for detailed description
  * of fields
  */
