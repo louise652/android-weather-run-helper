@@ -30,7 +30,7 @@ public class LocationUtil {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static LocationUtil locationUtil;
 
-    private Activity activity;
+    private final Activity activity;
 
 
     private LocationUtil(Activity activity) {
@@ -46,17 +46,14 @@ public class LocationUtil {
 
     /**
      * Checks if location permission is already granted. Show prompt if not
-     *
-     * @return User coords
      */
-    public LatLng checkLocationPermission() {
+    public void checkLocationPermission() {
         //check to see if we already have permission for location
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             showLocationPermissionPrompt();
         }
-        return getUserLocationResult();
     }
 
     /**
@@ -64,7 +61,7 @@ public class LocationUtil {
      *
      * @return user coords
      */
-    private LatLng getUserLocationResult() {
+    public LatLng getUserLocationResult() {
 
         LatLng locationResult = null;
         //if we have permission, grab coords

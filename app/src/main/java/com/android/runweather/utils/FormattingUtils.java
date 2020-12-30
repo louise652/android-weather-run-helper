@@ -27,7 +27,7 @@ public class FormattingUtils {
     }
 
     /**
-     * Formats the double temperature feilds to 1 decimal place and adds the degrees symbol
+     * Formats the double temperature fields to 1 decimal place and adds the degrees symbol
      *
      * @param temp temp to formats
      * @return formatted temp
@@ -36,8 +36,7 @@ public class FormattingUtils {
 
         DecimalFormat df = new DecimalFormat("#.#");
         df.format(temp);
-        String tempStr = df.format(temp) + "\u2103";
-        return tempStr;
+        return df.format(temp) + "\u2103";
 
 
     }
