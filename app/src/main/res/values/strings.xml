@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Run Weather</string>
     <string name="title_location_permission">Location Permission</string>
-    <string name="text_location_permission">Location is needed to get the weather for your area. You will need to enter an address manually if not granted</string>
+    <string name="text_location_permission">Location is required to get the weather for your area.</string>
     <string name="grant_permission">Grant permission</string>
     <string name="deny">Deny</string>
     <string name="place_error">Error: </string>

@@ -1,5 +1,7 @@
 package com.android.runweather.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
 import lombok.Data;
@@ -7,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 
 /**
  * Openweather api object: see https://openweathermap.org/api/one-call-api for detailed description

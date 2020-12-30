@@ -11,12 +11,6 @@ Clone this repository and import into Anroid Studio
 git clone git@github.com:louise652/android-weather-run-helper.git
 ```
 
-To get the location picker, you will need to register with the Google Places api and get a key.
-Follow [these instructions](https://developers.google.com/places/web-service/get-api-key) to do so and add the following line at the bottom of gradle.propertes
-
-placesKey=YOUR_API_KEY
-
-
 To connect to the openweatherAPI, you need to register and get a free api key, follow [these instructions.](https://openweathermap.org/appid)
 Add the following line into the gradle.properties file.
 
@@ -29,16 +23,12 @@ Future updates will include:
 * Snapping the view to the card with the optimal weather conditions
 * Adding in recommendations for what to wear for each timeslot
 * Filters to refine the time range of results
-* UI improvements for location selection
+* Work to enable user to select from a lcoation picker (Google Places API)
 
 ## Kanban Board
 A Kanban board outlining future work and progress to date can be found [here](https://trello.com/b/GRX8n57o/weather-run-app)
 
 ## Screenshots
 Screenshots of UI as of 24th September 2020. Images will be updated as UI changes are committed.
-
-![Location screen](screenshots/ScreenshotLoc1.png)
-
-![Location search](screenshots/ScreenshotLoc2.png)
 
 ![Weather Result Screen](screenshots/ScreenshotWeather.png)

@@ -1,115 +1,184 @@
 package com.android.runweather.activities;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.runweather.BuildConfig;
 import com.android.runweather.R;
+import com.android.runweather.adapters.WeatherAdapter;
+import com.android.runweather.interfaces.AsyncResponse;
+import com.android.runweather.models.Current;
+import com.android.runweather.models.Hourly;
+import com.android.runweather.models.WeatherVO;
+import com.android.runweather.tasks.ImageIconTask;
+import com.android.runweather.tasks.WeatherTask;
+import com.android.runweather.utils.FormattingUtils;
+import com.android.runweather.utils.LinePagerIndicatorDecoration;
 import com.android.runweather.utils.LocationUtil;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.util.Arrays;
+import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
- * Home activity which handles either:
- * Eliciting location service permission from the user and getting their city from it or;
- * Hooking into the Google Places API so the user can type and select their location manually
+ * Main activity which handles eliciting location service permission from the user and
+ * displaying current/future weather conditions
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements AsyncResponse {
 
-    String locationServiceString;
+    String city;
     LatLng coords;
-    View view;
-    AutocompleteSupportFragment autocompleteFragment;
+    public static final int TWELVE = 12;
+    ImageView currentImg;
+    TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
+    RecyclerView mRecyclerView;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        initComponents();
+        LocationUtil instance = LocationUtil.getInstance(this);
+        instance.checkLocationPermission();
+        coords = instance.getUserLocationResult();
+        if (coords != null) {
+            //we have successfully got our coords from locations service
+            city = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
+            Toast.makeText(this, "Getting weather results for " + city, Toast.LENGTH_SHORT).show();
+            getWeatherResults();
+        }else{
+            Toast.makeText(this, "Could not get your location. Ensure location permission is granted or try later", Toast.LENGTH_LONG).show();
+        }
 
-        coords = LocationUtil.getInstance(this).checkLocationPermission();
 
-        if (coords != null) { //we have successfully got our coords from locations ervice. No need for manual selection.
-            locationServiceString = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
-        } else {
+    }
 
-            //show the manual location selection
-            autocompleteFragment = initManualPlaceSelection();
+    private void getWeatherResults() {
+        //get the coords from the main activity and use to call out to weather api
+        //kick off async task
+        WeatherTask weatherTask = new WeatherTask();
 
-            view = findViewById(R.id.manual_container);
-            view.setVisibility(View.VISIBLE);
-            initManualLocation();
+        weatherTask.execute(coords.latitude, coords.longitude);
+        WeatherVO weatherList = new WeatherVO();
+
+        try {
+            //get result from async weather call
+            weatherList = weatherTask.get();
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            setWeatherResultViews(weatherList);
+
         }
     }
 
-    /**
-     * Overidden methods to handle manual location entry
-     */
-    private void initManualLocation() {
+    private void setWeatherResultViews(WeatherVO weatherList) {
+        setCurrentWeatherFields(weatherList);
 
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        //Set the hourly weather list of cards (max 24hours results)
+        List<Hourly> hourlyList = new ArrayList<>();
+        for (int result = 0; result < TWELVE; result++) {
+            hourlyList.add(weatherList.getHourly().get(result));
 
-        autocompleteFragment.setHint(getString(R.string.location_hint));
+        }
 
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        // List<Hourly> hourlyList = weatherList.getHourly();
+
+        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
+        mRecyclerView.setAdapter(mainRecyclerAdapter);
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                locationServiceString = place.getName();
-
-                coords = place.getLatLng();
-
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             }
 
             @Override
-            public void onError(@NonNull Status status) {
-                locationServiceString = R.string.place_error + status.getStatusMessage();
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
             }
+
         });
     }
 
+    private void setCurrentWeatherFields(WeatherVO weatherList) {
+        Current currentWeatherVO = weatherList.getCurrent();
 
-    /**
-     * Setup the AutoCompleteSupport fragment. This allows the user to search for a location if they do not want to use the location services
-     *
-     * @return fragment view
-     */
-    private AutocompleteSupportFragment initManualPlaceSelection() {
-        // Initialize Places.
-        Places.initialize(getApplicationContext(), BuildConfig.PLACES_KEY);
+        //kick off task to get icon for current weather
+        ImageIconTask iconTask = new ImageIconTask();
+        iconTask.execute(currentWeatherVO.getWeather().get(0).getIcon());
 
-        // Initialize the AutocompleteSupportFragment.
-        return (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        try {
+            currentImg.setImageDrawable(iconTask.get());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+
+
+            cityText.setText(city);
+            String currentLabel = String.format("Current weather at %s", FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
+            currentWeatherLabel.setText(currentLabel);
+
+            currentTemp.setText(FormattingUtils.formatTemperature(currentWeatherVO.getTemp()));
+            currentFeels.setText(FormattingUtils.formatTemperature(currentWeatherVO.getFeels_like()));
+            sunrise.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunrise())));
+            sunset.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunset())));
+            clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
+            currentDesc.setText(WordUtils.capitalize(currentWeatherVO.getWeather().get(0).description));
+            currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
+
+            // pager indicator
+            mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
+        }
     }
 
-    /**
-     * Call out to weather API with the location passed as a param on button click
-     *
-     * @param view Button to call the api with location
-     */
-    public void callWeather(View view) {
-        Toast.makeText(this, "Getting weather results for " + locationServiceString, Toast.LENGTH_SHORT).show();
+    private void initComponents() {
 
-        //Launch result activity and pass in City
-        Intent resultIntent = new Intent(MainActivity.this, ResultActivity.class);
-        resultIntent.putExtra("city", locationServiceString);
-        resultIntent.putExtra("lat", coords.latitude);
-        resultIntent.putExtra("lng", coords.longitude);
-        MainActivity.this.startActivity(resultIntent);
+        mRecyclerView = findViewById(R.id.recyclerview_rootview);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        // add pager behavior
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerView);
+
+        currentImg = findViewById(R.id.condIcon);
+        currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
+        cityText = findViewById(R.id.cityText);
+        currentTemp = findViewById(R.id.currentTemp);
+        currentFeels = findViewById(R.id.currentFeels);
+        sunrise = findViewById(R.id.sunrise);
+        sunset = findViewById(R.id.sunset);
+        clouds = findViewById(R.id.clouds);
+        currentDesc = findViewById(R.id.currentDesc);
+        currentWind = findViewById(R.id.currentWind);
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    @Override
+    public void processFinish(String output) {
+
 
     }
 }
