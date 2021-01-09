@@ -21,6 +21,7 @@ import com.android.runweather.tasks.WeatherTask;
 import com.android.runweather.utils.FormattingUtils;
 import com.android.runweather.utils.LinePagerIndicatorDecoration;
 import com.android.runweather.utils.LocationUtil;
+import com.android.runweather.utils.TimeSlotHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -65,6 +66,30 @@ public class MainActivity extends Activity {
 
     }
 
+    private void initComponents() {
+
+        mRecyclerView = findViewById(R.id.recyclerview_rootview);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        // add pager behavior
+        PagerSnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(mRecyclerView);
+
+        currentImg = findViewById(R.id.condIcon);
+        currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
+        cityText = findViewById(R.id.cityText);
+        currentTemp = findViewById(R.id.currentTemp);
+        currentFeels = findViewById(R.id.currentFeels);
+        sunrise = findViewById(R.id.sunrise);
+        sunset = findViewById(R.id.sunset);
+        clouds = findViewById(R.id.clouds);
+        currentDesc = findViewById(R.id.currentDesc);
+        currentWind = findViewById(R.id.currentWind);
+
+    }
+
     private void getWeatherResults() {
         //get the coords from the main activity and use to call out to weather api
         //kick off async task
@@ -82,22 +107,24 @@ public class MainActivity extends Activity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            setWeatherResultViews(weatherList);
+            setCurrentWeatherFields(weatherList);
+            setFutureResultViews(weatherList.getHourly());
+            getSuggestedTimeSlot(weatherList);
 
         }
     }
 
-    private void setWeatherResultViews(WeatherVO weatherList) {
-        setCurrentWeatherFields(weatherList);
+
+
+    private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
+
 
         //Set the hourly weather list of cards (max 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();
         for (int result = 0; result < TWELVE; result++) {
-            hourlyList.add(weatherList.getHourly().get(result));
+            hourlyList.add(hourlyWeatherList.get(result));
 
         }
-
-        // List<Hourly> hourlyList = weatherList.getHourly();
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
         mRecyclerView.setAdapter(mainRecyclerAdapter);
@@ -147,28 +174,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void initComponents() {
 
-        mRecyclerView = findViewById(R.id.recyclerview_rootview);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
-
-        // add pager behavior
-        PagerSnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mRecyclerView);
-
-        currentImg = findViewById(R.id.condIcon);
-        currentWeatherLabel = findViewById(R.id.currentWeatherLabel);
-        cityText = findViewById(R.id.cityText);
-        currentTemp = findViewById(R.id.currentTemp);
-        currentFeels = findViewById(R.id.currentFeels);
-        sunrise = findViewById(R.id.sunrise);
-        sunset = findViewById(R.id.sunset);
-        clouds = findViewById(R.id.clouds);
-        currentDesc = findViewById(R.id.currentDesc);
-        currentWind = findViewById(R.id.currentWind);
-
+    private void getSuggestedTimeSlot(WeatherVO weatherList) {
+        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList);
+        s.forEach(x -> System.out.println(x.toString()));
+        //do something with this result to display as a suggested timeslot
     }
-
 }

@@ -81,6 +81,10 @@ public class LocationUtil {
 
                 locationResult = new LatLng(lat, lng);
 
+            }else{
+                //default if location broken (temporary)
+                locationResult = new LatLng(53.4831837, -2.2300844);
+
             }
 
         }
