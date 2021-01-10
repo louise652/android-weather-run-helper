@@ -1,8 +1,10 @@
 package com.android.runweather.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "Could not get your location. Ensure location permission is granted or try later", Toast.LENGTH_LONG).show();
         }
-
-
     }
 
     @Override
@@ -74,6 +74,28 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+
+        switch (item.getItemId())
+        {
+            case R.id.menu_settings:
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+
+            case R.id.menu_help:
+                Intent helpIntent = new Intent(MainActivity.this, HelpActivity.class);
+                startActivity(helpIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
 
     private void initComponents() {
 
