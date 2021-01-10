@@ -11,6 +11,7 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -106,7 +107,7 @@ public class LocationUtil {
             return addresses.get(0).getSubAdminArea(); //returns the city/town location
         } catch (IOException e) {
 
-            e.printStackTrace();
+           Log.e("Error getting location from coordinates", e.getMessage());
             return "";
         }
     }

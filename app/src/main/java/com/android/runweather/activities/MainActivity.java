@@ -1,12 +1,14 @@
 package com.android.runweather.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +37,7 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
  * displaying current/future weather conditions
  */
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     String city;
     LatLng coords;
@@ -64,6 +66,13 @@ public class MainActivity extends Activity {
         }
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
     }
 
     private void initComponents() {
@@ -102,9 +111,7 @@ public class MainActivity extends Activity {
             //get result from async weather call
             weatherList = weatherTask.get();
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         } finally {
             setCurrentWeatherFields(weatherList);
@@ -150,9 +157,7 @@ public class MainActivity extends Activity {
 
         try {
             currentImg.setImageDrawable(iconTask.get());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         } finally {
 
