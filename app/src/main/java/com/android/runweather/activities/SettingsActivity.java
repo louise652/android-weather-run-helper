@@ -1,11 +1,15 @@
 package com.android.runweather.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,10 +17,21 @@ import com.android.runweather.R;
 
 import java.util.Calendar;
 
+import static com.android.runweather.activities.MainActivity.END_TIME;
+import static com.android.runweather.activities.MainActivity.START_TIME;
+import static com.android.runweather.activities.MainActivity.SUNRISE;
+import static com.android.runweather.activities.MainActivity.SUNSET;
+import static com.android.runweather.activities.MainActivity.TIME_PREFERENCES;
+import static com.android.runweather.activities.MainActivity.TWELVE;
+
 public class SettingsActivity extends AppCompatActivity {
+    public static final int TWENTY_FOUR = 24;
+    private static final String TIME_PREF_SELECTED = "timePrefSelected";
+    public SharedPreferences timePrefs;
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
     LinearLayout customSelection;
+    private int startTime, endTime, itemSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,21 +40,23 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         timeRange = findViewById(R.id.timeSelection);
 
+
         customSelection = findViewById(R.id.customSelection);
         hourFrom = findViewById(R.id.hourFrom);
         hourTo = findViewById(R.id.hourTo);
 
+        timePrefs = getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
+        //Show the time range the user has previously selected or default to option 1 (next 4 hours)
+        int spinnerPosition = timePrefs.getInt(TIME_PREF_SELECTED, 1);
+        timeRange.setSelection(spinnerPosition);
 
         Calendar calendar = Calendar.getInstance();
         int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-
-        calendar.add(Calendar.HOUR_OF_DAY, 4);
-
-        int previousHour = calendar.getTime().getHours();
+        int futureHour = calendar.get(Calendar.HOUR_OF_DAY + 4);
 
 
         setNumberPickerVals(hourFrom, currentHour);
-        setNumberPickerVals(hourTo, previousHour);
+        setNumberPickerVals(hourTo, futureHour);
 
 
 
@@ -50,26 +67,56 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 customSelection.setVisibility(View.INVISIBLE);
+                itemSelected = position;
+                Intent intent = getIntent();
+                int sunrise = intent.getIntExtra(SUNRISE, 0);
+                int sunset = intent.getIntExtra(SUNSET, TWENTY_FOUR);
+
+                int hoursUntilTomorrow = TWENTY_FOUR - currentHour;
                 switch (position) {
 
                     case 0:
                         //2 hours
+                        startTime = 0;
+                        endTime = 2;
                         break;
                     case 1:
                         //4 hours
+                        startTime = 0;
+                        endTime = 4;
                         break;
                     case 2:
                         //8 hours
+                        startTime = 0;
+                        endTime = 8;
                         break;
                     case 3:
-                        //daytime
+                        //daytime: logic based on sunrise/sunset
+
+                        if (currentHour >= sunset) {
+                            Toast.makeText(getApplicationContext(), "No more daylight today- try another selection", Toast.LENGTH_SHORT).show();
+                            //default to next twelve hours
+                            startTime = 0;
+                            endTime = TWELVE;
+                        } else {
+                            startTime = (currentHour < sunrise ? sunrise : 0);
+                            endTime = sunset;
+                        }
+
                         break;
                     case 4:
-                        //tomorrow
+                        //tomorrow daylight: sunrise and sunset should be similar enough between today and tomorrow to reuse here
+                        startTime = hoursUntilTomorrow + sunrise;
+                        endTime = hoursUntilTomorrow + sunset +1;
                         break;
                     case 5:
                         //custom, show pickers so user can select their own tine range
                         customSelection.setVisibility(View.VISIBLE);
+                        break;
+
+                    default:
+                        startTime = 0;
+                        endTime = TWELVE;
                         break;
 
                 }
@@ -110,5 +157,13 @@ public class SettingsActivity extends AppCompatActivity {
      */
     public void savePrefs(View view) {
 
+        SharedPreferences.Editor editor = timePrefs.edit();
+
+        editor.putInt(START_TIME, startTime);
+        editor.putInt(END_TIME, endTime);
+        editor.putInt(TIME_PREF_SELECTED, itemSelected);
+        editor.apply();
+        Toast.makeText(getApplicationContext(), "Settings saved", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }

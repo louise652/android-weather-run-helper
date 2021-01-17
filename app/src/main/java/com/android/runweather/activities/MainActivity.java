@@ -1,6 +1,8 @@
 package com.android.runweather.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,9 +31,13 @@ import com.android.runweather.utils.TimeSlotHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.FormattingUtils.getDate;
+import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
+import static com.android.runweather.utils.FormattingUtils.sdf;
 import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 /**
@@ -40,21 +46,29 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
  */
 
 public class MainActivity extends AppCompatActivity {
-
+    public static final String TIME_PREFERENCES = "timePreferences";
+    public static final String START_TIME = "startTime";
+    public static final String END_TIME = "endTime";
+    public static final String SUNRISE = "sunrise";
+    public static final String SUNSET = "sunset";
+    public static final int TWELVE = 12;
     String city;
     LatLng coords;
-    public static final int TWELVE = 12;
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
+    SharedPreferences timePrefs;
+    int sunriseHr, sunsetHr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_main);
         initComponents();
+        timePrefs = getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
         LocationUtil instance = LocationUtil.getInstance(this);
         instance.checkLocationPermission();
         coords = instance.getUserLocationResult();
@@ -63,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             city = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
             Toast.makeText(this, "Getting weather results for " + city, Toast.LENGTH_SHORT).show();
             getWeatherResults();
-        }else{
+        } else {
             Toast.makeText(this, "Could not get your location. Ensure location permission is granted or try later", Toast.LENGTH_LONG).show();
         }
     }
@@ -76,13 +90,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.menu_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                settingsIntent.putExtra(SUNRISE, sunriseHr);
+                settingsIntent.putExtra(SUNSET, sunsetHr);
                 startActivity(settingsIntent);
                 return true;
 
@@ -144,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
+        int startTime = timePrefs.getInt(START_TIME, 0);
+        int endTime = timePrefs.getInt(END_TIME, TWELVE);
 
-
-        //Set the hourly weather list of cards (max 24hours results)
+        //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();
-        for (int result = 0; result < TWELVE; result++) {
+        for (int result = startTime; result < endTime; result++) {
             hourlyList.add(hourlyWeatherList.get(result));
 
         }
@@ -183,15 +197,23 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } finally {
 
-
             cityText.setText(city);
-            String currentLabel = String.format("Current weather at %s", FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
+            String currentLabel = String.format("Current weather at %s", sdf.format(getDate(currentWeatherVO.getDt())));
             currentWeatherLabel.setText(currentLabel);
 
             currentTemp.setText(FormattingUtils.formatTemperature(currentWeatherVO.getTemp()));
             currentFeels.setText(FormattingUtils.formatTemperature(currentWeatherVO.getFeels_like()));
-            sunrise.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunrise())));
-            sunset.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunset())));
+
+            Date sunriseTime = getDate(currentWeatherVO.getSunrise());
+            Date sunsetTime = getDate(currentWeatherVO.getSunset());
+
+            sunrise.setText(sdf.format(sunriseTime));
+            sunset.setText(sdf.format(sunsetTime));
+
+            //used so that we can set user preferences to show results between sunrise and sunset
+            sunriseHr = getHourOfDayFromTime(sunriseTime);
+            sunsetHr = getHourOfDayFromTime(sunsetTime);
+
             clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
             currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(0).description));
             currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));

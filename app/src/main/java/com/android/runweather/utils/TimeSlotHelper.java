@@ -4,7 +4,6 @@ import com.android.runweather.models.Hourly;
 import com.android.runweather.models.WeatherVO;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class TimeSlotHelper {
         }
 
         //sort by rank
-        Collections.sort(hourlyWeatherList, Comparator.comparingInt(Hourly::getRank));
+        hourlyWeatherList.sort(Comparator.comparingInt(Hourly::getRank));
 
         return getBestPrecipResults(hourlyWeatherList);
 
@@ -80,7 +79,7 @@ public class TimeSlotHelper {
      * @return
      */
     public static int getPrecipRank(Double precip) {
-        int retVal = 0; //optimal
+        int retVal; //optimal
         if (precip <= 0.12) {
             retVal = 0;
         } else if (precip <= 0.24) {

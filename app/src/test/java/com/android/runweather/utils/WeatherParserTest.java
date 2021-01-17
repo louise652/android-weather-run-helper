@@ -33,7 +33,7 @@ public class WeatherParserTest {
 
     }
 
-    /**
+    /*
      * Test a selection of attributes to ensure that response parses correctly
      */
 
