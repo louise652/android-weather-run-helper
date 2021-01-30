@@ -1,6 +1,7 @@
 package com.android.runweather.clients;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.android.runweather.BuildConfig;
 
@@ -48,7 +49,7 @@ public class WeatherClient {
      */
     public String getWeather(double lat, double lng) {
         InputStream inputStream;
-
+        String result = "";
         try {
 
             //make the connection
@@ -68,12 +69,14 @@ public class WeatherClient {
 
             inputStream.close();
             connection.disconnect();
-            return sb.toString();
+            result = sb.toString();
         } catch (Throwable t) {
-            t.printStackTrace();
+            //connection error
+            Log.e("WeatherClient connection issue", t.getMessage());
+
         }
 
-        return null;
+        return result;
 
     }
 

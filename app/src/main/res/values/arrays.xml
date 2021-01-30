@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerItems">
+    <item>Next 2 hours</item>
+    <item>Next 4 hours</item>
+    <item>Next 8 hours</item>
+        <item>Daytime</item>
+    <item>Tomorrow Daytime</item>
+        <item>Custom</item>
+
+    </string-array>
+</resources>

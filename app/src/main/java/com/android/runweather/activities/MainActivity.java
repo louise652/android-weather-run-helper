@@ -1,12 +1,18 @@
 package com.android.runweather.activities;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,12 +27,17 @@ import com.android.runweather.tasks.WeatherTask;
 import com.android.runweather.utils.FormattingUtils;
 import com.android.runweather.utils.LinePagerIndicatorDecoration;
 import com.android.runweather.utils.LocationUtil;
+import com.android.runweather.utils.TimeSlotHelper;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.FormattingUtils.getDate;
+import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
+import static com.android.runweather.utils.FormattingUtils.sdf;
 import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 /**
@@ -34,22 +45,30 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
  * displaying current/future weather conditions
  */
 
-public class MainActivity extends Activity {
-
+public class MainActivity extends AppCompatActivity {
+    public static final String TIME_PREFERENCES = "timePreferences";
+    public static final String START_TIME_INDEX = "startTime";
+    public static final String END_TIME_INDEX = "endTime";
+    public static final String SUNRISE = "sunrise";
+    public static final String SUNSET = "sunset";
+    public static final int TWELVE = 12;
     String city;
     LatLng coords;
-    public static final int TWELVE = 12;
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
+    SharedPreferences timePrefs;
+    int sunriseHr, sunsetHr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_main);
         initComponents();
+        timePrefs = getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
         LocationUtil instance = LocationUtil.getInstance(this);
         instance.checkLocationPermission();
         coords = instance.getUserLocationResult();
@@ -58,94 +77,39 @@ public class MainActivity extends Activity {
             city = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
             Toast.makeText(this, "Getting weather results for " + city, Toast.LENGTH_SHORT).show();
             getWeatherResults();
-        }else{
+        } else {
             Toast.makeText(this, "Could not get your location. Ensure location permission is granted or try later", Toast.LENGTH_LONG).show();
         }
-
-
     }
 
-    private void getWeatherResults() {
-        //get the coords from the main activity and use to call out to weather api
-        //kick off async task
-        WeatherTask weatherTask = new WeatherTask();
-
-        weatherTask.execute(coords.latitude, coords.longitude);
-        WeatherVO weatherList = new WeatherVO();
-
-        try {
-            //get result from async weather call
-            weatherList = weatherTask.get();
-
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            setWeatherResultViews(weatherList);
-
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
     }
 
-    private void setWeatherResultViews(WeatherVO weatherList) {
-        setCurrentWeatherFields(weatherList);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        //Set the hourly weather list of cards (max 24hours results)
-        List<Hourly> hourlyList = new ArrayList<>();
-        for (int result = 0; result < TWELVE; result++) {
-            hourlyList.add(weatherList.getHourly().get(result));
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                settingsIntent.putExtra(SUNRISE, sunriseHr);
+                settingsIntent.putExtra(SUNSET, sunsetHr);
+                startActivity(settingsIntent);
+                return true;
 
+            case R.id.menu_help:
+                Intent helpIntent = new Intent(MainActivity.this, HelpActivity.class);
+                startActivity(helpIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        // List<Hourly> hourlyList = weatherList.getHourly();
-
-        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
-        mRecyclerView.setAdapter(mainRecyclerAdapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-
-            }
-
-        });
     }
 
-    private void setCurrentWeatherFields(WeatherVO weatherList) {
-        Current currentWeatherVO = weatherList.getCurrent();
-
-        //kick off task to get icon for current weather
-        ImageIconTask iconTask = new ImageIconTask();
-        iconTask.execute(currentWeatherVO.getWeather().get(0).getIcon());
-
-        try {
-            currentImg.setImageDrawable(iconTask.get());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-
-
-            cityText.setText(city);
-            String currentLabel = String.format("Current weather at %s", FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getDt())));
-            currentWeatherLabel.setText(currentLabel);
-
-            currentTemp.setText(FormattingUtils.formatTemperature(currentWeatherVO.getTemp()));
-            currentFeels.setText(FormattingUtils.formatTemperature(currentWeatherVO.getFeels_like()));
-            sunrise.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunrise())));
-            sunset.setText(FormattingUtils.formatDateTime(Integer.toString(currentWeatherVO.getSunset())));
-            clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
-            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(0).description));
-            currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
-
-            // pager indicator
-            mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
-        }
-    }
 
     private void initComponents() {
 
@@ -171,4 +135,98 @@ public class MainActivity extends Activity {
 
     }
 
+    private void getWeatherResults() {
+        //get the coords from the main activity and use to call out to weather api
+        //kick off async task
+        WeatherTask weatherTask = new WeatherTask();
+
+        weatherTask.execute(coords.latitude, coords.longitude);
+        WeatherVO weatherList = new WeatherVO();
+
+        try {
+            //get result from async weather call
+            weatherList = weatherTask.get();
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            setCurrentWeatherFields(weatherList);
+            setFutureResultViews(weatherList.getHourly());
+            getSuggestedTimeSlot(weatherList);
+
+        }
+    }
+
+
+    private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
+        int startTime = timePrefs.getInt(START_TIME_INDEX, 0);
+        int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
+
+        //Set the hourly weather list of cards (default 24hours results)
+        List<Hourly> hourlyList = new ArrayList<>();
+        for (int result = startTime; result < endTime; result++) {
+            hourlyList.add(hourlyWeatherList.get(result));
+
+        }
+
+        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
+        mRecyclerView.setAdapter(mainRecyclerAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+            }
+
+        });
+    }
+
+    private void setCurrentWeatherFields(WeatherVO weatherList) {
+        Current currentWeatherVO = weatherList.getCurrent();
+
+        //kick off task to get icon for current weather
+        ImageIconTask iconTask = new ImageIconTask();
+        iconTask.execute(currentWeatherVO.getWeather().get(0).getIcon());
+
+        try {
+            currentImg.setImageDrawable(iconTask.get());
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+
+            cityText.setText(city);
+            String currentLabel = String.format("Current weather at %s", sdf.format(getDate(currentWeatherVO.getDt())));
+            currentWeatherLabel.setText(currentLabel);
+
+            currentTemp.setText(FormattingUtils.formatTemperature(currentWeatherVO.getTemp()));
+            currentFeels.setText(FormattingUtils.formatTemperature(currentWeatherVO.getFeels_like()));
+
+            Date sunriseTime = getDate(currentWeatherVO.getSunrise());
+            Date sunsetTime = getDate(currentWeatherVO.getSunset());
+
+            sunrise.setText(sdf.format(sunriseTime));
+            sunset.setText(sdf.format(sunsetTime));
+
+            //used so that we can set user preferences to show results between sunrise and sunset
+            sunriseHr = getHourOfDayFromTime(sunriseTime);
+            sunsetHr = getHourOfDayFromTime(sunsetTime);
+
+            clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
+            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(0).description));
+            currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
+
+            // pager indicator
+            mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
+        }
+    }
+
+
+    private void getSuggestedTimeSlot(WeatherVO weatherList) {
+        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList);
+        s.forEach(x -> System.out.println(x.toString()));
+        //do something with this result to display as a suggested timeslot
+    }
 }

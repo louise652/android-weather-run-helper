@@ -4,6 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static com.android.runweather.utils.FormattingUtils.getDate;
+import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
+import static com.android.runweather.utils.FormattingUtils.sdf;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -12,16 +15,8 @@ public class FormattingUtilsTest {
     @Test
     public void testGetValidDateString() {
         String expectedTime = "4:00PM";
-        String actualTime = FormattingUtils.formatDateTime("1599836400");
+        String actualTime = sdf.format(getDate(1599836400));
         assertEquals("should display valid time", expectedTime, actualTime);
-    }
-
-    @Test
-    public void testInvalidDateString() {
-        String expectedTime = "Error getting time";
-        String actualTime = FormattingUtils.formatDateTime("");
-
-        assertEquals("should display error", expectedTime, actualTime);
     }
 
     @Test
@@ -30,5 +25,12 @@ public class FormattingUtilsTest {
         String actual = FormattingUtils.formatTemperature(22.2345);
 
         assertEquals("should format temp", expectedTemp, actual);
+    }
+
+    @Test
+    public void testGetHourFromDate(){
+        int expectedHour = 16;
+        int actualHour = getHourOfDayFromTime(getDate(1599836400));
+        assertEquals("should display correct hour", expectedHour, actualHour);
     }
 }

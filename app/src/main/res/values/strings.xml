@@ -13,4 +13,11 @@
     <string name="sunset">Sunset:\u0020</string>
     <string name="cloud_coverage">Cloud Coverage:\u0020</string>
     <string name="precipitation">Precipitation:\u0020</string>
+    <string name="settings">Settings</string>
+    <string name="help">Help</string>
+    <string name="placeholder_help_text">Placeholder help text</string>
+    <string name="select_preferred_time_range">Select preferred time range</string>
+    <string name="to">to</string>
+    <string name="save">Save</string>
+    <string name="time_window_selection">Time Window Selection</string>
 </resources>

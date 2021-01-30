@@ -17,11 +17,11 @@ import com.android.runweather.models.Hourly;
 import com.android.runweather.tasks.ImageIconTask;
 import com.android.runweather.utils.FormattingUtils;
 
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.FormattingUtils.getDate;
+import static com.android.runweather.utils.FormattingUtils.sdf;
 import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 /**
@@ -62,7 +62,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
 
         //set display fields with the model data
-        String time = FormattingUtils.formatDateTime(Integer.toString(item.getDt()));
+        String time = sdf.format(getDate(item.getDt()));
         String description = capitalize(item.getWeather().get(0).getDescription());
         holder.description.setText(String.format("%s- %s", time, description));
         holder.precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
@@ -76,9 +76,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
             Drawable drawable = iconTask.get();
             //set Img
             holder.img.setBackground(drawable);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
