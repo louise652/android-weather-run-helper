@@ -47,8 +47,8 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TIME_PREFERENCES = "timePreferences";
-    public static final String START_TIME = "startTime";
-    public static final String END_TIME = "endTime";
+    public static final String START_TIME_INDEX = "startTime";
+    public static final String END_TIME_INDEX = "endTime";
     public static final String SUNRISE = "sunrise";
     public static final String SUNSET = "sunset";
     public static final int TWELVE = 12;
@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
-        int startTime = timePrefs.getInt(START_TIME, 0);
-        int endTime = timePrefs.getInt(END_TIME, TWELVE);
+        int startTime = timePrefs.getInt(START_TIME_INDEX, 0);
+        int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
 
         //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();

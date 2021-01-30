@@ -54,12 +54,4 @@ public class MainActivityTest {
     }
 
 
-    @Test
-
-    public void testTomorrowDaylightHour() {
-
-
-    }
-
-
 }
