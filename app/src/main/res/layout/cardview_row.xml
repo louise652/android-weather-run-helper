@@ -8,7 +8,6 @@
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="2dp">
 
-
     <RelativeLayout
         android:id="@+id/weatherPrefRL"
         android:layout_width="match_parent"
@@ -17,14 +16,11 @@
         android:paddingRight="8dp"
         android:paddingBottom="8dp">
 
-
         <TextView
             android:id="@+id/weatherPrefItemTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
-
+            android:layout_centerVertical="true" />
 
         <ImageView
             android:id="@+id/dragIcon"
