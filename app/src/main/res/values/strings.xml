@@ -20,4 +20,6 @@
     <string name="to">to</string>
     <string name="save">Save</string>
     <string name="time_window_selection">Time Window Selection</string>
+    <string name="weather_preferences">Weather Preferences (drag to reorder preferences)</string>
+    <string name="drag_icon">Drag icon</string>
 </resources>

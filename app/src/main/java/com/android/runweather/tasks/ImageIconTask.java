@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 
 import com.android.runweather.clients.WeatherClient;
 
+import static com.android.runweather.utils.Constants.ZERO;
+
 
 /**
  * Task to retrieve the icon for a given weather condition
@@ -17,7 +19,7 @@ public class ImageIconTask extends AsyncTask<String, Void, Drawable> {
     @Override
     protected Drawable doInBackground(String... params) {
 
-        return (new WeatherClient()).getImage(params[0]);
+        return (new WeatherClient()).getImage(params[ZERO]);
 
     }
 

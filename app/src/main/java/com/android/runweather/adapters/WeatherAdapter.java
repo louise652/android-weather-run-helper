@@ -2,6 +2,7 @@ package com.android.runweather.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import static com.android.runweather.utils.Constants.*;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,10 +38,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         this.items = items;
     }
 
-    /**
+    /*
      * Get the view
-     * @param parent result view
-     * @return item view
      */
 
     @NonNull
@@ -58,14 +57,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         //kick off an async task to get weather image
         ImageIconTask iconTask = new ImageIconTask();
-        iconTask.execute(item.getWeather().get(0).getIcon());
+        iconTask.execute(item.getWeather().get(ZERO).getIcon());
 
 
         //set display fields with the model data
         String time = sdf.format(getDate(item.getDt()));
-        String description = capitalize(item.getWeather().get(0).getDescription());
+        String description = capitalize(item.getWeather().get(ZERO).getDescription());
         holder.description.setText(String.format("%s- %s", time, description));
-        holder.precip.setText(String.format("%.0f%%", (item.getPop() * 100))); //probability is in decimal format, * 100 to get percent
+        holder.precip.setText(String.format("%.0f%%", (item.getPop() * ONE_HUNDRED))); //probability is in decimal format, * 100 to get percent
         holder.clouds.setText(String.format("%s%%", item.getClouds()));
         holder.temp.setText(FormattingUtils.formatTemperature(item.getTemp()));
         holder.feelsLike.setText(FormattingUtils.formatTemperature(item.getFeels_like()));

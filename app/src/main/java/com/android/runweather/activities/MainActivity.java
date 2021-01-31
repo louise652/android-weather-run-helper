@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.Constants.*;
 import static com.android.runweather.utils.FormattingUtils.getDate;
 import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
 import static com.android.runweather.utils.FormattingUtils.sdf;
@@ -46,12 +47,7 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
  */
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TIME_PREFERENCES = "timePreferences";
-    public static final String START_TIME_INDEX = "startTime";
-    public static final String END_TIME_INDEX = "endTime";
-    public static final String SUNRISE = "sunrise";
-    public static final String SUNSET = "sunset";
-    public static final int TWELVE = 12;
+
     String city;
     LatLng coords;
     ImageView currentImg;
@@ -75,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
         if (coords != null) {
             //we have successfully got our coords from locations service
             city = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
-            Toast.makeText(this, "Getting weather results for " + city, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, WEATHER_RESULT_TXT + city, Toast.LENGTH_SHORT).show();
             getWeatherResults();
         } else {
-            Toast.makeText(this, "Could not get your location. Ensure location permission is granted or try later", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, LOCATION_ERROR_TXT, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -159,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
-        int startTime = timePrefs.getInt(START_TIME_INDEX, 0);
+        int startTime = timePrefs.getInt(START_TIME_INDEX, ZERO);
         int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
 
         //Set the hourly weather list of cards (default 24hours results)
@@ -189,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
         //kick off task to get icon for current weather
         ImageIconTask iconTask = new ImageIconTask();
-        iconTask.execute(currentWeatherVO.getWeather().get(0).getIcon());
+        iconTask.execute(currentWeatherVO.getWeather().get(ZERO).getIcon());
 
         try {
             currentImg.setImageDrawable(iconTask.get());
@@ -215,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             sunsetHr = getHourOfDayFromTime(sunsetTime);
 
             clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
-            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(0).description));
+            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(ZERO).description));
             currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
 
             // pager indicator
