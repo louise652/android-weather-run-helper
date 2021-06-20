@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.Constants.*;
 import static com.android.runweather.utils.FormattingUtils.getDate;
 import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
 import static com.android.runweather.utils.FormattingUtils.sdf;
@@ -46,18 +47,13 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
  */
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TIME_PREFERENCES = "timePreferences";
-    public static final String START_TIME_INDEX = "startTime";
-    public static final String END_TIME_INDEX = "endTime";
-    public static final String SUNRISE = "sunrise";
-    public static final String SUNSET = "sunset";
-    public static final int TWELVE = 12;
+
     String city;
     LatLng coords;
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
-    SharedPreferences timePrefs;
+    SharedPreferences timePrefs, weatherPrefs;
     int sunriseHr, sunsetHr;
 
     @Override
@@ -69,16 +65,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initComponents();
         timePrefs = getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
+        weatherPrefs = getSharedPreferences(WEATHER_PREFERENCES, Context.MODE_PRIVATE);
         LocationUtil instance = LocationUtil.getInstance(this);
         instance.checkLocationPermission();
         coords = instance.getUserLocationResult();
         if (coords != null) {
             //we have successfully got our coords from locations service
             city = LocationUtil.getInstance(this).getLocFromCoords(coords.latitude, coords.longitude);
-            Toast.makeText(this, "Getting weather results for " + city, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, WEATHER_RESULT_TXT + city, Toast.LENGTH_SHORT).show();
             getWeatherResults();
         } else {
-            Toast.makeText(this, "Could not get your location. Ensure location permission is granted or try later", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, LOCATION_ERROR_TXT, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -151,17 +148,18 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } finally {
             setCurrentWeatherFields(weatherList);
-            setFutureResultViews(weatherList.getHourly());
-            getSuggestedTimeSlot(weatherList);
+            setFutureResultViews(weatherList);
+
 
         }
     }
 
 
-    private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
-        int startTime = timePrefs.getInt(START_TIME_INDEX, 0);
+    private void setFutureResultViews(WeatherVO weatherList) {
+        int startTime = timePrefs.getInt(START_TIME_INDEX, ZERO);
         int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
 
+        List<Hourly> hourlyWeatherList = weatherList.getHourly();
         //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();
         for (int result = startTime; result < endTime; result++) {
@@ -182,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        getSuggestedTimeSlot(weatherList);
     }
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
@@ -189,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
         //kick off task to get icon for current weather
         ImageIconTask iconTask = new ImageIconTask();
-        iconTask.execute(currentWeatherVO.getWeather().get(0).getIcon());
+        iconTask.execute(currentWeatherVO.getWeather().get(ZERO).getIcon());
 
         try {
             currentImg.setImageDrawable(iconTask.get());
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             sunsetHr = getHourOfDayFromTime(sunsetTime);
 
             clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
-            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(0).description));
+            currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(ZERO).description));
             currentWind.setText(String.format("%sm/s", currentWeatherVO.wind_speed));
 
             // pager indicator
@@ -225,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getSuggestedTimeSlot(WeatherVO weatherList) {
-        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList);
+        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList, weatherPrefs);
         s.forEach(x -> System.out.println(x.toString()));
         //do something with this result to display as a suggested timeslot
     }

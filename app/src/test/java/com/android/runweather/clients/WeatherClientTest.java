@@ -15,7 +15,7 @@ public class WeatherClientTest {
     @Test
     public void testWeatherAPIUrl(){
         String expectedPartialURL = "https://api.openweathermap.org/data/2.5/onecall?lat=55.0&lon=5.0&exclude=minutely,daily&APPID=";
-        String actualURL = weatherClient.getURL(lat, lng).toString();
+        String actualURL = weatherClient.getURL(lat, lng);
 
         assert(actualURL.contains(expectedPartialURL));
 
