@@ -24,8 +24,10 @@ import com.android.runweather.utils.ItemMoveCallback;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.android.runweather.utils.Constants.C;
 import static com.android.runweather.utils.Constants.CUSTOM_END_TIME;
 import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
+import static com.android.runweather.utils.Constants.D;
 import static com.android.runweather.utils.Constants.DAYLIGHT_ERROR_TXT;
 import static com.android.runweather.utils.Constants.EIGHT;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
@@ -47,10 +49,10 @@ import static com.android.runweather.utils.Constants.TWO;
 import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
 import static com.android.runweather.utils.Constants.WIND;
 import static com.android.runweather.utils.Constants.ZERO;
-import static com.android.runweather.utils.Constants.FIRST;
-import static com.android.runweather.utils.Constants.SECOND;
-import static com.android.runweather.utils.Constants.THIRD;
-import static com.android.runweather.utils.Constants.FOURTH;
+import static com.android.runweather.utils.Constants.A;
+import static com.android.runweather.utils.Constants.B;
+import static com.android.runweather.utils.Constants.C;
+import static com.android.runweather.utils.Constants.D;
 
 /**
  * Activity to handle selecting either a predefined time window or custom time range to narrow down results.
@@ -62,7 +64,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
     LinearLayout customSelection;
-    String first, second, third, fourth;
+    String a, b, c, d;
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
@@ -107,8 +109,8 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add(SUNLIGHT);
         stringArrayList.add(RAIN);
-        stringArrayList.add(WIND);
         stringArrayList.add(TEMP);
+        stringArrayList.add(WIND);
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -203,10 +205,10 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
      */
     private void getWeatherPrefs() {
 
-        first = weatherPrefs.getString(FIRST, SUNLIGHT);
-        second = weatherPrefs.getString(SECOND, RAIN);
-        third = weatherPrefs.getString(THIRD, WIND);
-        fourth = weatherPrefs.getString(FOURTH, TEMP);
+        a = weatherPrefs.getString(A, SUNLIGHT);
+        b = weatherPrefs.getString(B, RAIN);
+        c = weatherPrefs.getString(C, TEMP);
+        d = weatherPrefs.getString(D, WIND);
     }
 
     /*
@@ -305,10 +307,10 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         timePrefEditor.apply();
 
         SharedPreferences.Editor weatherPrefEditor = weatherPrefs.edit();
-        weatherPrefEditor.putString(FIRST, first);
-        weatherPrefEditor.putString(SECOND, second);
-        weatherPrefEditor.putString(THIRD, third);
-        weatherPrefEditor.putString(FOURTH, fourth);
+        weatherPrefEditor.putString(A, a);
+        weatherPrefEditor.putString(B, b);
+        weatherPrefEditor.putString(C, c);
+        weatherPrefEditor.putString(D, d);
 
         weatherPrefEditor.apply();
 

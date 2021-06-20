@@ -27,11 +27,11 @@ public class Constants {
     public static final String TEMP = "Good Temp";
     public static final String RAIN = "Less Rain";
 
-    //Order of user weather prefs
-    public static final String FIRST = "first";
-    public static final String SECOND = "second";
-    public static final String THIRD = "third";
-    public static final String FOURTH = "fourth";
+    //Order of user weather prefs, these need to be alphabetical for ordering
+    public static final String A = "a";
+    public static final String B = "b";
+    public static final String C = "c";
+    public static final String D = "d";
 
     public static final int ZERO = 0;
     public static final int ONE = 1;

@@ -1,5 +1,7 @@
 package com.android.runweather.utils;
 
+import android.content.SharedPreferences;
+
 import com.android.runweather.models.Hourly;
 import com.android.runweather.models.WeatherVO;
 
@@ -8,7 +10,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
+import static com.android.runweather.utils.Constants.A;
+import static com.android.runweather.utils.Constants.RAIN;
+import static com.android.runweather.utils.Constants.SUNLIGHT;
+import static com.android.runweather.utils.Constants.TEMP;
+import static com.android.runweather.utils.Constants.WIND;
 import static java.time.ZoneOffset.UTC;
 
 
@@ -33,42 +41,75 @@ public class TimeSlotHelper {
      * @return
      */
 
-    public static List<Hourly> getBestTime(WeatherVO weatherList) {
+    public static List<Hourly> getBestTime(WeatherVO weatherList, SharedPreferences weatherPrefs) {
         List<Hourly> hourlyWeatherList = weatherList.getHourly();
-
         int sunrise = weatherList.getCurrent().getSunrise();
         int sunset = weatherList.getCurrent().getSunset();
 
-        for (Hourly item: hourlyWeatherList){
+        for (Hourly item : hourlyWeatherList) {
             int tempRank = getTempRank(item.getFeels_like());
             item.setTempRank(tempRank);
-            setIsDaylight( item, sunrise, sunset);
+            setIsDaylight(item, sunrise, sunset);
         }
 
 
-        //TODO: sort based on user prefs
+        //TODO: user prefs are not ordering correctly
 
-        //we want to compare firstly daylight hours
-        Comparator<Hourly> comparator = Comparator.comparing(hourly -> !hourly.isDaylight());
+        Comparator<Hourly> comparator = orderByPreference(A); //initialise the comparator with the top user pref for weather conditions
+        Map<String, ?> keys = weatherPrefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
 
-        //then by % precipitation
-        comparator =  comparator.thenComparing(Hourly::getPop);
+            if (!entry.getKey().equals(A)) { //loop through secondary prefs and order
 
-        //then by temp
-        comparator = comparator.thenComparing(Hourly::getTempRank);
+                orderBySecondaryPreferences((String) entry.getValue(), comparator);
 
-        //finally by wind
-        comparator = comparator.thenComparing(Hourly::getWind_speed);
+            }
 
-        //sort
+        }
+
         hourlyWeatherList.sort(comparator);
 
         return getBestResults(hourlyWeatherList);
 
     }
 
+    private static Comparator orderByPreference(String pref) {
+
+        Comparator<Hourly> comparator = Comparator.comparing(hourly -> !hourly.isDaylight());
+        switch (pref) {
+            case SUNLIGHT:
+                comparator = Comparator.comparing(hourly -> !hourly.isDaylight());
+                break;
+            case RAIN:
+                comparator = Comparator.comparing(hourly -> hourly.getPop());
+                break;
+            case TEMP:
+                comparator = Comparator.comparing(hourly -> hourly.getTempRank());
+            case WIND:
+                comparator = Comparator.comparing(hourly -> hourly.getWind_speed());
+        }
+        return comparator;
+    }
+
+    private static Comparator orderBySecondaryPreferences(String pref, Comparator<Hourly> comparator) {
+
+        switch (pref) {
+            case SUNLIGHT:
+                comparator = comparator.thenComparing(hourly -> !hourly.isDaylight());
+                break;
+            case RAIN:
+                comparator = comparator.thenComparing(Hourly::getPop);
+                break;
+            case TEMP:
+                comparator = comparator.thenComparing(Hourly::getTempRank);
+            case WIND:
+                comparator = comparator.thenComparing(Hourly::getWind_speed);
+        }
+        return comparator;
+    }
+
     /*
-    * Sets a flag if the hour is between sunrise and sunset
+     * Sets a flag if the hour is between sunrise and sunset
      */
 
     private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
@@ -78,12 +119,12 @@ public class TimeSlotHelper {
         Instant sunriseTime = Instant.ofEpochSecond(sunrise);
         Instant sunsetTime = Instant.ofEpochSecond(sunset);
 
-        LocalDateTime currentTime =  LocalDateTime.ofInstant( currentTimeInst, UTC );
+        LocalDateTime currentTime = LocalDateTime.ofInstant(currentTimeInst, UTC);
         boolean isDaylight = (
-                currentTime.isAfter( LocalDateTime.ofInstant(sunriseTime, UTC)  )
+                currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
                         &&
-                        currentTime.isBefore( LocalDateTime.ofInstant(sunsetTime, UTC) )
-        ) ;
+                        currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC))
+        );
 
         item.setDaylight(isDaylight);
     }
@@ -101,7 +142,7 @@ public class TimeSlotHelper {
 
             if (i < NUMBER_OF_RESULTS) { //get the top x results regardless of rank
                 result.add(hourlyWeatherItem);
-            } else if( hourlyWeatherItem.isDaylight() &&  hourlyWeatherItem.getPop() <= hourlyWeatherList.get(i - 1).getPop()) {
+            } else if (hourlyWeatherItem.isDaylight() && hourlyWeatherItem.getPop() <= hourlyWeatherList.get(i - 1).getPop()) {
                 //we should also include subsequent results if the %pop is the same
                 result.add(hourlyWeatherItem);
             } else {

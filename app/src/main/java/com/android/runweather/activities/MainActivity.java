@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getSuggestedTimeSlot(WeatherVO weatherList) {
-        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList);
+        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList, weatherPrefs);
         s.forEach(x -> System.out.println(x.toString()));
         //do something with this result to display as a suggested timeslot
     }
