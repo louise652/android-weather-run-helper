@@ -29,19 +29,15 @@ import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
 import static com.android.runweather.utils.Constants.DAYLIGHT_ERROR_TXT;
 import static com.android.runweather.utils.Constants.EIGHT;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
-import static com.android.runweather.utils.Constants.FIRST;
 import static com.android.runweather.utils.Constants.FOUR;
-import static com.android.runweather.utils.Constants.FOURTH;
 import static com.android.runweather.utils.Constants.ONE;
 import static com.android.runweather.utils.Constants.RAIN;
-import static com.android.runweather.utils.Constants.SECOND;
 import static com.android.runweather.utils.Constants.SETTINGS_SAVED;
 import static com.android.runweather.utils.Constants.START_TIME_INDEX;
 import static com.android.runweather.utils.Constants.SUNLIGHT;
 import static com.android.runweather.utils.Constants.SUNRISE;
 import static com.android.runweather.utils.Constants.SUNSET;
 import static com.android.runweather.utils.Constants.TEMP;
-import static com.android.runweather.utils.Constants.THIRD;
 import static com.android.runweather.utils.Constants.TIME_PREFERENCES;
 import static com.android.runweather.utils.Constants.TIME_PREF_SELECTED;
 import static com.android.runweather.utils.Constants.TWELVE;
@@ -51,6 +47,10 @@ import static com.android.runweather.utils.Constants.TWO;
 import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
 import static com.android.runweather.utils.Constants.WIND;
 import static com.android.runweather.utils.Constants.ZERO;
+import static com.android.runweather.utils.Constants.FIRST;
+import static com.android.runweather.utils.Constants.SECOND;
+import static com.android.runweather.utils.Constants.THIRD;
+import static com.android.runweather.utils.Constants.FOURTH;
 
 /**
  * Activity to handle selecting either a predefined time window or custom time range to narrow down results.
@@ -66,7 +66,8 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
-    private int startTimeIndex, endTimeIndex, itemSelected, hoursUntilTomorrow, currentHour, customFromHr, customToHr;
+    private int startTimeIndex, endTimeIndex, itemSelected, hoursUntilTomorrow, currentHour, customFromHr, customToHr, sunrise, sunset;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +140,10 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
                 customSelection.setVisibility(View.INVISIBLE);
                 itemSelected = position;
                 Intent intent = getIntent();
-                int sunrise = intent.getIntExtra(SUNRISE, ZERO);
-                int sunset = intent.getIntExtra(SUNSET, TWENTY_FOUR);
+                sunrise = intent.getIntExtra(SUNRISE, ZERO);
+                sunset = intent.getIntExtra(SUNSET, TWENTY_FOUR);
 
-                setTimeWindowIndexes(position, sunrise, sunset);
+                setTimeWindowIndexes(position);
             }
 
             @Override
@@ -211,7 +212,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     /*
      * Set indexes based on user time window selection
      */
-    private void setTimeWindowIndexes(int position, int sunrise, int sunset) {
+    private void setTimeWindowIndexes(int position) {
         switch (position) {
             case 0:
                 //2 hours
@@ -229,7 +230,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
                 endTimeIndex = EIGHT;
                 break;
             case 3://daytime: logic based on sunrise/sunset
-                setDaytimeIndexes(sunrise, sunset);
+                setDaytimeIndexes();
                 break;
             case 4:
                 //tomorrow daylight: sunrise and sunset should be similar enough between today and tomorrow to reuse here
@@ -252,7 +253,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
      * If option is selected it will show hourly weather for daylight today.
      * A toast will display if there are no hours of daylight left.
      */
-    private void setDaytimeIndexes(int sunrise, int sunset) {
+    private void setDaytimeIndexes() {
 
         if (currentHour >= sunset) {
             Toast.makeText(getApplicationContext(), DAYLIGHT_ERROR_TXT, Toast.LENGTH_SHORT).show();

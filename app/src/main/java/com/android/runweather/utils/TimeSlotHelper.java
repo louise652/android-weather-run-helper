@@ -3,14 +3,19 @@ package com.android.runweather.utils;
 import com.android.runweather.models.Hourly;
 import com.android.runweather.models.WeatherVO;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static java.time.ZoneOffset.UTC;
 
 
 /**
  * Utility to display optimal time to go for a run
  * MVP:
+ * 1. Should be daylight
  * 1. Should avoid or minimise rain
  * 2. Should aim for close to optimal 'feels like' temp
  * 3. Should minimise wind
@@ -20,9 +25,8 @@ public class TimeSlotHelper {
 
     public static final int NUMBER_OF_RESULTS = 3; //hardcoded for now, in future this will be selectable
 
-
     /*
-     * Returns the hour with the most optimal conditions
+     * Returns the hours sorted by the most optimal conditions
      *
      * @param weatherList
      * @param numResults
@@ -30,24 +34,66 @@ public class TimeSlotHelper {
      */
 
     public static List<Hourly> getBestTime(WeatherVO weatherList) {
-
         List<Hourly> hourlyWeatherList = weatherList.getHourly();
-        for (int i = 0; i < hourlyWeatherList.size(); i++) {
-            setPrecipRank(hourlyWeatherList, i);
+
+        int sunrise = weatherList.getCurrent().getSunrise();
+        int sunset = weatherList.getCurrent().getSunset();
+
+        for (Hourly item: hourlyWeatherList){
+            int tempRank = getTempRank(item.getFeels_like());
+            item.setTempRank(tempRank);
+            setIsDaylight( item, sunrise, sunset);
         }
 
-        //sort by rank
-        hourlyWeatherList.sort(Comparator.comparingInt(Hourly::getRank));
 
-        return getBestPrecipResults(hourlyWeatherList);
+        //TODO: sort based on user prefs
+
+        //we want to compare firstly daylight hours
+        Comparator<Hourly> comparator = Comparator.comparing(hourly -> !hourly.isDaylight());
+
+        //then by % precipitation
+        comparator =  comparator.thenComparing(Hourly::getPop);
+
+        //then by temp
+        comparator = comparator.thenComparing(Hourly::getTempRank);
+
+        //finally by wind
+        comparator = comparator.thenComparing(Hourly::getWind_speed);
+
+        //sort
+        hourlyWeatherList.sort(comparator);
+
+        return getBestResults(hourlyWeatherList);
 
     }
 
     /*
-     * Get the specified number of top results. If there are more results that have the same rank,
+    * Sets a flag if the hour is between sunrise and sunset
+     */
+
+    private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
+
+
+        Instant currentTimeInst = Instant.ofEpochSecond(item.getDt());
+        Instant sunriseTime = Instant.ofEpochSecond(sunrise);
+        Instant sunsetTime = Instant.ofEpochSecond(sunset);
+
+        LocalDateTime currentTime =  LocalDateTime.ofInstant( currentTimeInst, UTC );
+        boolean isDaylight = (
+                currentTime.isAfter( LocalDateTime.ofInstant(sunriseTime, UTC)  )
+                        &&
+                        currentTime.isBefore( LocalDateTime.ofInstant(sunsetTime, UTC) )
+        ) ;
+
+        item.setDaylight(isDaylight);
+    }
+
+
+    /*
+     * Get the specified number of top results. If there are more results that have the same conditions,
      *  also include them for now.
      */
-    private static List<Hourly> getBestPrecipResults(List<Hourly> hourlyWeatherList) {
+    private static List<Hourly> getBestResults(List<Hourly> hourlyWeatherList) {
 
         List<Hourly> result = new ArrayList<>();
         for (int i = 0; i < hourlyWeatherList.size(); i++) {
@@ -55,8 +101,8 @@ public class TimeSlotHelper {
 
             if (i < NUMBER_OF_RESULTS) { //get the top x results regardless of rank
                 result.add(hourlyWeatherItem);
-            } else if (hourlyWeatherItem.getRank() <= hourlyWeatherList.get(i - 1).getRank()) {
-                //we should also include subsequent results if the %precip is the same
+            } else if( hourlyWeatherItem.isDaylight() &&  hourlyWeatherItem.getPop() <= hourlyWeatherList.get(i - 1).getPop()) {
+                //we should also include subsequent results if the %pop is the same
                 result.add(hourlyWeatherItem);
             } else {
                 //we have enough results, no need to continue iterating
@@ -67,35 +113,24 @@ public class TimeSlotHelper {
     }
 
 
-    private static void setPrecipRank(List<Hourly> hourlyWeatherList, int i) {
-        Hourly hourlyWeather = hourlyWeatherList.get(i);
-        int rank = getPrecipRank(hourlyWeather.getPop());
-        hourlyWeather.setRank(rank);
-    }
-
     /*
-     * Ranks the desirability of a % chance of precipitation
-     * @param precip
+     * Ranks the desirability of a 'feels like' temp
+     * @param temp
      * @return
      */
-    public static int getPrecipRank(Double precip) {
-        int retVal; //optimal
-        if (precip <= 0.12) {
-            retVal = 0;
-        } else if (precip <= 0.24) {
-            retVal = 5;
-        } else if (precip <= 0.49) {
-            retVal = 5;
-        } else if (precip <= 0.75) {
-            retVal = 8;
-        } else {
-            retVal = 10; //def don't want
-        }
+    public static int getTempRank(Double temp) {
 
+        int retVal; //optimal run temp
+        if (12 <= temp && temp <= 15) {
+            retVal = 0;
+        } else if (7 <= temp && temp <= 11.9) { // this is alright
+            retVal = 3;
+        } else {
+            retVal = 5; //too hot/cold
+        }
 
         return retVal;
     }
-
 
 }
 

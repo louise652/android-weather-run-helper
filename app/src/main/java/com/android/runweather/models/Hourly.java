@@ -21,6 +21,7 @@ public class Hourly {
     public double wind_speed;
     public Double pop; //probability of precipitation
     public List<Weather> weather;
-    public int rank; //used to hold the favorability of conditions
+    public int tempRank; //ranks how favourable the temperature is (lowest = best)
+    public boolean isDaylight; //between sunrise and sunset
 
 }

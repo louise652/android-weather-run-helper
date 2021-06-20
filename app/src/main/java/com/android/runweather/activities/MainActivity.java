@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView currentImg;
     TextView cityText, currentWeatherLabel, currentTemp, currentFeels, sunrise, sunset, clouds, currentDesc, currentWind;
     RecyclerView mRecyclerView;
-    SharedPreferences timePrefs;
+    SharedPreferences timePrefs, weatherPrefs;
     int sunriseHr, sunsetHr;
 
     @Override
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initComponents();
         timePrefs = getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
+        weatherPrefs = getSharedPreferences(WEATHER_PREFERENCES, Context.MODE_PRIVATE);
         LocationUtil instance = LocationUtil.getInstance(this);
         instance.checkLocationPermission();
         coords = instance.getUserLocationResult();
@@ -147,17 +148,18 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } finally {
             setCurrentWeatherFields(weatherList);
-            setFutureResultViews(weatherList.getHourly());
-            getSuggestedTimeSlot(weatherList);
+            setFutureResultViews(weatherList);
+
 
         }
     }
 
 
-    private void setFutureResultViews(List<Hourly> hourlyWeatherList) {
+    private void setFutureResultViews(WeatherVO weatherList) {
         int startTime = timePrefs.getInt(START_TIME_INDEX, ZERO);
         int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
 
+        List<Hourly> hourlyWeatherList = weatherList.getHourly();
         //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();
         for (int result = startTime; result < endTime; result++) {
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        getSuggestedTimeSlot(weatherList);
     }
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
