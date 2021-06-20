@@ -23,16 +23,19 @@ import com.android.runweather.utils.ItemMoveCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Map;
 
-import static com.android.runweather.utils.Constants.C;
 import static com.android.runweather.utils.Constants.CUSTOM_END_TIME;
 import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
-import static com.android.runweather.utils.Constants.D;
 import static com.android.runweather.utils.Constants.DAYLIGHT_ERROR_TXT;
 import static com.android.runweather.utils.Constants.EIGHT;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
 import static com.android.runweather.utils.Constants.FOUR;
 import static com.android.runweather.utils.Constants.ONE;
+import static com.android.runweather.utils.Constants.PREF_A;
+import static com.android.runweather.utils.Constants.PREF_B;
+import static com.android.runweather.utils.Constants.PREF_C;
+import static com.android.runweather.utils.Constants.PREF_D;
 import static com.android.runweather.utils.Constants.RAIN;
 import static com.android.runweather.utils.Constants.SETTINGS_SAVED;
 import static com.android.runweather.utils.Constants.START_TIME_INDEX;
@@ -49,10 +52,6 @@ import static com.android.runweather.utils.Constants.TWO;
 import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
 import static com.android.runweather.utils.Constants.WIND;
 import static com.android.runweather.utils.Constants.ZERO;
-import static com.android.runweather.utils.Constants.A;
-import static com.android.runweather.utils.Constants.B;
-import static com.android.runweather.utils.Constants.C;
-import static com.android.runweather.utils.Constants.D;
 
 /**
  * Activity to handle selecting either a predefined time window or custom time range to narrow down results.
@@ -84,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         instantiateWeatherPrefPicker();
 
         getUserTimePrefs();
-        getWeatherPrefs();
+        //getWeatherPrefs();
 
         setNumberPickerVals(hourFrom, customFromHr);
         setNumberPickerVals(hourTo, customToHr);
@@ -107,10 +106,20 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
      */
     private void populateRecyclerView() {
         ArrayList<String> stringArrayList = new ArrayList<>();
-        stringArrayList.add(SUNLIGHT);
-        stringArrayList.add(RAIN);
-        stringArrayList.add(TEMP);
-        stringArrayList.add(WIND);
+
+        if (weatherPrefs.getString(PREF_A, "").isEmpty()) {
+
+            stringArrayList.add(SUNLIGHT);
+            stringArrayList.add(RAIN);
+            stringArrayList.add(TEMP);
+            stringArrayList.add(WIND);
+        }else{
+            Map<String, ?> keys = weatherPrefs.getAll();
+            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+
+                stringArrayList.add(entry.getValue().toString());
+            }
+        }
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -124,6 +133,9 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         touchHelper.attachToRecyclerView(recyclerView);
 
         recyclerView.setAdapter(mAdapter);
+
+        mAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -198,17 +210,6 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         startTimeIndex = timePrefs.getInt(START_TIME_INDEX, ZERO);
         endTimeIndex = timePrefs.getInt(END_TIME_INDEX, TWELVE);
-    }
-
-    /*
-     * Get the order of preferred weather conditions from shared prefs
-     */
-    private void getWeatherPrefs() {
-
-        a = weatherPrefs.getString(A, SUNLIGHT);
-        b = weatherPrefs.getString(B, RAIN);
-        c = weatherPrefs.getString(C, TEMP);
-        d = weatherPrefs.getString(D, WIND);
     }
 
     /*
@@ -307,10 +308,10 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         timePrefEditor.apply();
 
         SharedPreferences.Editor weatherPrefEditor = weatherPrefs.edit();
-        weatherPrefEditor.putString(A, a);
-        weatherPrefEditor.putString(B, b);
-        weatherPrefEditor.putString(C, c);
-        weatherPrefEditor.putString(D, d);
+        weatherPrefEditor.putString(PREF_A, mAdapter.data.get(0));
+        weatherPrefEditor.putString(PREF_B, mAdapter.data.get(1));
+        weatherPrefEditor.putString(PREF_C, mAdapter.data.get(2));
+        weatherPrefEditor.putString(PREF_D, mAdapter.data.get(3));
 
         weatherPrefEditor.apply();
 

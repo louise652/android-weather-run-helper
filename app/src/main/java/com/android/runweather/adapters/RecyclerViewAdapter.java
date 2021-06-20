@@ -19,14 +19,12 @@ import com.android.runweather.utils.ItemMoveCallback;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.android.runweather.utils.Constants.ONE;
-
 /**
  * Adapter to display the weather condition preferences which the user can drag to reorder
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> implements ItemMoveCallback.ItemTouchHelperContract {
 
-    private final ArrayList<String> data;
+    public final ArrayList<String> data;
 
     private final StartDragListener mStartDragListener;
 
@@ -65,15 +63,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(data, i, i + ONE);
-            }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(data, i, i - ONE);
-            }
-        }
+
+        Collections.swap(data, fromPosition, toPosition);
+        //update position
         notifyItemMoved(fromPosition, toPosition);
     }
 

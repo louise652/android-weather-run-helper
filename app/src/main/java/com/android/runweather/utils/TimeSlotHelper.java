@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static com.android.runweather.utils.Constants.A;
+import static com.android.runweather.utils.Constants.PREF_A;
 import static com.android.runweather.utils.Constants.RAIN;
 import static com.android.runweather.utils.Constants.SUNLIGHT;
 import static com.android.runweather.utils.Constants.TEMP;
@@ -55,11 +55,11 @@ public class TimeSlotHelper {
 
         //TODO: user prefs are not ordering correctly
 
-        Comparator<Hourly> comparator = orderByPreference(A); //initialise the comparator with the top user pref for weather conditions
+        Comparator<Hourly> comparator = orderByPreference(PREF_A); //initialise the comparator with the top user pref for weather conditions
         Map<String, ?> keys = weatherPrefs.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
 
-            if (!entry.getKey().equals(A)) { //loop through secondary prefs and order
+            if (!entry.getKey().equals(PREF_A)) { //loop through secondary prefs and order
 
                 orderBySecondaryPreferences((String) entry.getValue(), comparator);
 
