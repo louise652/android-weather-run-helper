@@ -22,6 +22,7 @@ import com.android.runweather.interfaces.StartDragListener;
 import com.android.runweather.utils.ItemMoveCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -63,7 +64,6 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
     LinearLayout customSelection;
-    String a, b, c, d;
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
@@ -83,7 +83,6 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         instantiateWeatherPrefPicker();
 
         getUserTimePrefs();
-        //getWeatherPrefs();
 
         setNumberPickerVals(hourFrom, customFromHr);
         setNumberPickerVals(hourTo, customToHr);
@@ -105,26 +104,12 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
      * Add the adapter to allow the user to drag/drop their preferred weather conditions
      */
     private void populateRecyclerView() {
-        ArrayList<String> stringArrayList = new ArrayList<>();
-
-        if (weatherPrefs.getString(PREF_A, "").isEmpty()) {
-
-            stringArrayList.add(SUNLIGHT);
-            stringArrayList.add(RAIN);
-            stringArrayList.add(TEMP);
-            stringArrayList.add(WIND);
-        }else{
-            Map<String, ?> keys = weatherPrefs.getAll();
-            for (Map.Entry<String, ?> entry : keys.entrySet()) {
-
-                stringArrayList.add(entry.getValue().toString());
-            }
-        }
 
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
+        ArrayList<String> stringArrayList =  setupOrderedWeatherPrefs();
         mAdapter = new RecyclerViewAdapter(stringArrayList, this);
 
         ItemTouchHelper.Callback callback =
@@ -136,6 +121,35 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         mAdapter.notifyDataSetChanged();
 
+    }
+
+    /*
+    * Sets default ordering if user prefs are not set
+     */
+    private  ArrayList<String> setupOrderedWeatherPrefs() {
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        //setting defaults if empty
+        if (weatherPrefs.getString(PREF_A, "").isEmpty()) {
+            stringArrayList.add( SUNLIGHT);
+            stringArrayList.add( RAIN);
+            stringArrayList.add( TEMP);
+            stringArrayList.add( WIND);
+        }else{
+
+            //otherwise loop through prefs in order and add value to list
+            Map<String, ?> prefsKeys = weatherPrefs.getAll();
+            //loop through each pref and add the comparator to order appropriately
+            ArrayList<String> prefsString = new ArrayList<>( Arrays. asList( PREF_A , PREF_B , PREF_C, PREF_D ) );
+
+            for (String pref: prefsString) {
+                for (Map.Entry<String, ?> entry : prefsKeys.entrySet()) {
+                    if (entry.getKey().equals(pref)) { //loop through secondary prefs and order
+                        stringArrayList.add( entry.getValue().toString());
+                    }
+                }
+            }
+        }
+        return stringArrayList;
     }
 
     @Override

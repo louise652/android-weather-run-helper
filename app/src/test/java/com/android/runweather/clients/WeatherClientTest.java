@@ -8,13 +8,13 @@ import org.junit.runners.JUnit4;
 public class WeatherClientTest {
 
     private final WeatherClient weatherClient = new WeatherClient();
-    private final double lat = 55.0;
-    private final double lng = 5.0;
 
 
     @Test
     public void testWeatherAPIUrl(){
         String expectedPartialURL = "https://api.openweathermap.org/data/2.5/onecall?lat=55.0&lon=5.0&exclude=minutely,daily&APPID=";
+        double lat = 55.0;
+        double lng = 5.0;
         String actualURL = weatherClient.getURL(lat, lng);
 
         assert(actualURL.contains(expectedPartialURL));

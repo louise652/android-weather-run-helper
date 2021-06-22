@@ -35,7 +35,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.android.runweather.utils.Constants.*;
+import static com.android.runweather.utils.Constants.END_TIME_INDEX;
+import static com.android.runweather.utils.Constants.LOCATION_ERROR_TXT;
+import static com.android.runweather.utils.Constants.START_TIME_INDEX;
+import static com.android.runweather.utils.Constants.SUNRISE;
+import static com.android.runweather.utils.Constants.SUNSET;
+import static com.android.runweather.utils.Constants.TIME_PREFERENCES;
+import static com.android.runweather.utils.Constants.TWELVE;
+import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
+import static com.android.runweather.utils.Constants.WEATHER_RESULT_TXT;
+import static com.android.runweather.utils.Constants.ZERO;
 import static com.android.runweather.utils.FormattingUtils.getDate;
 import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
 import static com.android.runweather.utils.FormattingUtils.sdf;
@@ -167,7 +176,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
+        int sunrise = weatherList.getCurrent().getSunrise();
+        int sunset = weatherList.getCurrent().getSunset();
+
+        List<Hourly> orderedList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs, sunrise, sunset);
+
+        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, orderedList);
         mRecyclerView.setAdapter(mainRecyclerAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -180,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        getSuggestedTimeSlot(weatherList);
     }
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
@@ -220,12 +233,5 @@ public class MainActivity extends AppCompatActivity {
             // pager indicator
             mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
         }
-    }
-
-
-    private void getSuggestedTimeSlot(WeatherVO weatherList) {
-        List<Hourly> s = TimeSlotHelper.getBestTime(weatherList, weatherPrefs);
-        s.forEach(x -> System.out.println(x.toString()));
-        //do something with this result to display as a suggested timeslot
     }
 }

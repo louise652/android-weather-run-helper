@@ -23,7 +23,7 @@ public class WeatherClient {
     private static final String APP_ID = "&APPID=" + BuildConfig.WEATHER_KEY;
     private static final String IMG_URL = "https://openweathermap.org/img/wn/";
 
-    OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient();
 
     /*
     * get response from OpenWeatherAPI

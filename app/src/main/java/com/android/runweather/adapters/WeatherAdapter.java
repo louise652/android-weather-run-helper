@@ -94,12 +94,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         private final TextView temp;
         private final TextView feelsLike;
         private final TextView speed;
-        private final View rootView;
         private final ImageView img;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            rootView = itemView;
             //instantiate UI components
             description = itemView.findViewById(R.id.description);
             precip = itemView.findViewById(R.id.precip);
