@@ -22,4 +22,6 @@
     <string name="time_window_selection">Time Window Selection</string>
     <string name="weather_preferences">Weather Preferences (drag to reorder preferences)</string>
     <string name="drag_icon">Drag icon</string>
+    <string name="custom_order">Custom order</string>
+    <string name="order_by_time">Order by time</string>
 </resources>

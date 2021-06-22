@@ -61,13 +61,44 @@
             android:focusableInTouchMode="true" />
     </LinearLayout>
 
+    <RadioGroup
+        android:id="@+id/customOrderRG"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/customSelection">
+
+        <RadioButton
+            android:id="@+id/radioTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:onClick="onTimeAscClick"
+            android:padding="10dp"
+            android:text="@string/order_by_time" />
+
+        <RadioButton
+            android:id="@+id/radioCustom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onCustomPrefClick"
+            android:padding="10dp"
+            android:text="@string/custom_order"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </RadioGroup>
+
     <LinearLayout
         android:id="@+id/weatherPrefsLL"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customSelection">
+        app:layout_constraintTop_toBottomOf="@+id/customOrderRG">
 
         <TextView
             android:id="@+id/tvWthrSelLabel"

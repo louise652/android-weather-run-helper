@@ -63,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     public SharedPreferences timePrefs, weatherPrefs;
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
-    LinearLayout customSelection;
+    LinearLayout customSelection, weatherPrefsLL;
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
@@ -94,6 +94,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     }
 
     private void instantiateWeatherPrefPicker() {
+        weatherPrefsLL = findViewById(R.id.weatherPrefsLL);
         weatherPrefs = getSharedPreferences(WEATHER_PREFERENCES, Context.MODE_PRIVATE);
         recyclerView = findViewById(R.id.weatherPrefsRV);
 
@@ -331,5 +332,14 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         Toast.makeText(getApplicationContext(), SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    }
+
+    public void onCustomPrefClick(View view) {
+        weatherPrefsLL.setVisibility(View.VISIBLE);
+    }
+
+    public void onTimeAscClick(View view) {
+        weatherPrefsLL.setVisibility(View.INVISIBLE);
+
     }
 }
