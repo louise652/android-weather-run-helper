@@ -32,3 +32,4 @@ A Kanban board outlining future work and progress to date can be found [here](ht
 Screenshots of UI as of 24th September 2020. Images will be updated as UI changes are committed.
 
 ![Weather Result Screen](screenshots/ScreenshotWeather.png)
+![Weather Settings Screen](screenshots/ScreenshotSettings.png)
