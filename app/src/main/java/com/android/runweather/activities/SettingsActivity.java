@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,12 +28,14 @@ import java.util.Calendar;
 import java.util.Map;
 
 import static com.android.runweather.utils.Constants.CUSTOM_END_TIME;
+import static com.android.runweather.utils.Constants.CUSTOM_ORDER;
 import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
 import static com.android.runweather.utils.Constants.DAYLIGHT_ERROR_TXT;
 import static com.android.runweather.utils.Constants.EIGHT;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
 import static com.android.runweather.utils.Constants.FOUR;
 import static com.android.runweather.utils.Constants.ONE;
+import static com.android.runweather.utils.Constants.ORDER_PREFERENCES;
 import static com.android.runweather.utils.Constants.PREF_A;
 import static com.android.runweather.utils.Constants.PREF_B;
 import static com.android.runweather.utils.Constants.PREF_C;
@@ -60,10 +63,11 @@ import static com.android.runweather.utils.Constants.ZERO;
 
 public class SettingsActivity extends AppCompatActivity implements StartDragListener {
 
-    public SharedPreferences timePrefs, weatherPrefs;
+    public SharedPreferences timePrefs, weatherPrefs, orderPrefs;
+    RadioButton customOrder, timeOrder;
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
-    LinearLayout customSelection;
+    LinearLayout customSelection, weatherPrefsLL;
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
@@ -94,6 +98,10 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     }
 
     private void instantiateWeatherPrefPicker() {
+        customOrder = findViewById(R.id.radioCustom);
+        timeOrder = findViewById(R.id.radioTime);
+
+        weatherPrefsLL = findViewById(R.id.weatherPrefsLL);
         weatherPrefs = getSharedPreferences(WEATHER_PREFERENCES, Context.MODE_PRIVATE);
         recyclerView = findViewById(R.id.weatherPrefsRV);
 
@@ -109,7 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        ArrayList<String> stringArrayList =  setupOrderedWeatherPrefs();
+        ArrayList<String> stringArrayList = setupOrderedWeatherPrefs();
         mAdapter = new RecyclerViewAdapter(stringArrayList, this);
 
         ItemTouchHelper.Callback callback =
@@ -124,27 +132,27 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     }
 
     /*
-    * Sets default ordering if user prefs are not set
+     * Sets default ordering if user prefs are not set
      */
-    private  ArrayList<String> setupOrderedWeatherPrefs() {
+    private ArrayList<String> setupOrderedWeatherPrefs() {
         ArrayList<String> stringArrayList = new ArrayList<>();
         //setting defaults if empty
         if (weatherPrefs.getString(PREF_A, "").isEmpty()) {
-            stringArrayList.add( SUNLIGHT);
-            stringArrayList.add( RAIN);
-            stringArrayList.add( TEMP);
-            stringArrayList.add( WIND);
-        }else{
+            stringArrayList.add(SUNLIGHT);
+            stringArrayList.add(RAIN);
+            stringArrayList.add(TEMP);
+            stringArrayList.add(WIND);
+        } else {
 
             //otherwise loop through prefs in order and add value to list
             Map<String, ?> prefsKeys = weatherPrefs.getAll();
             //loop through each pref and add the comparator to order appropriately
-            ArrayList<String> prefsString = new ArrayList<>( Arrays. asList( PREF_A , PREF_B , PREF_C, PREF_D ) );
+            ArrayList<String> prefsString = new ArrayList<>(Arrays.asList(PREF_A, PREF_B, PREF_C, PREF_D));
 
-            for (String pref: prefsString) {
+            for (String pref : prefsString) {
                 for (Map.Entry<String, ?> entry : prefsKeys.entrySet()) {
                     if (entry.getKey().equals(pref)) { //loop through secondary prefs and order
-                        stringArrayList.add( entry.getValue().toString());
+                        stringArrayList.add(entry.getValue().toString());
                     }
                 }
             }
@@ -329,7 +337,21 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         weatherPrefEditor.apply();
 
+        orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor orderPrefEditor = orderPrefs.edit();
+        orderPrefEditor.putBoolean(CUSTOM_ORDER, customOrder.isSelected());
+        orderPrefEditor.apply();
+
         Toast.makeText(getApplicationContext(), SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    }
+
+    public void onCustomPrefClick(View view) {
+        weatherPrefsLL.setVisibility(View.VISIBLE);
+    }
+
+    public void onTimeAscClick(View view) {
+        weatherPrefsLL.setVisibility(View.INVISIBLE);
+
     }
 }
