@@ -5,6 +5,8 @@ public class Constants {
     //shared preferences
     public static final String TIME_PREFERENCES = "timePreferences";
     public static final String WEATHER_PREFERENCES = "weatherPreferences";
+    public static final String ORDER_PREFERENCES = "orderPreferences";
+    public static final String CUSTOM_ORDER = "customOrder";
 
     //fields to ge the preferred times
     public static final String START_TIME_INDEX = "startTime";

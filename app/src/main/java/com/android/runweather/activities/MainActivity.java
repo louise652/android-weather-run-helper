@@ -35,8 +35,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.Constants.CUSTOM_ORDER;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
 import static com.android.runweather.utils.Constants.LOCATION_ERROR_TXT;
+import static com.android.runweather.utils.Constants.ORDER_PREFERENCES;
 import static com.android.runweather.utils.Constants.START_TIME_INDEX;
 import static com.android.runweather.utils.Constants.SUNRISE;
 import static com.android.runweather.utils.Constants.SUNSET;
@@ -171,17 +173,21 @@ public class MainActivity extends AppCompatActivity {
         List<Hourly> hourlyWeatherList = weatherList.getHourly();
         //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = new ArrayList<>();
-        for (int result = startTime; result < endTime; result++) {
-            hourlyList.add(hourlyWeatherList.get(result));
 
+        SharedPreferences orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
+
+        if (!orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
+            for (int result = startTime; result < endTime; result++) {
+                hourlyList.add(hourlyWeatherList.get(result));
+
+            }
+        } else {
+            int sunrise = weatherList.getCurrent().getSunrise();
+            int sunset = weatherList.getCurrent().getSunset();
+            hourlyList = TimeSlotHelper.getBestTime(hourlyWeatherList, weatherPrefs, sunrise, sunset);
         }
 
-        int sunrise = weatherList.getCurrent().getSunrise();
-        int sunset = weatherList.getCurrent().getSunset();
-
-        List<Hourly> orderedList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs, sunrise, sunset);
-
-        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, orderedList);
+        WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
         mRecyclerView.setAdapter(mainRecyclerAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
