@@ -14,18 +14,19 @@
     <!--city label -->
     <TextView
         android:id="@+id/cityText"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
         style="?android:attr/textAppearanceLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#990000" />
+        android:layout_height="wrap_content"/>
 
     <TextView
+        android:textAppearance="?attr/textAppearanceSubtitle2"
         style="?android:attr/textAppearanceMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/currentWeatherLabel" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/currentDetails"
         card_view:contentPadding="10dp"
         card_view:cardPreventCornerOverlap="false"
@@ -54,6 +55,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:textAppearance="?attr/textAppearanceSubtitle2"
                     android:textStyle="bold"
                     android:id="@+id/currentDesc"
                     android:layout_width="wrap_content"
@@ -134,7 +136,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                   android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:labelFor="@+id/clouds"
                     android:text="@string/cloud_coverage" />
@@ -162,7 +164,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <Space
         android:layout_width="1dp"
@@ -170,6 +172,7 @@
 
     <TextView
         android:layout_width="wrap_content"
+        android:textAppearance="?attr/textAppearanceSubtitle2"
         style="?android:attr/textAppearanceMedium"
         android:text="@string/weather_forecast"
         android:layout_height="wrap_content" />
