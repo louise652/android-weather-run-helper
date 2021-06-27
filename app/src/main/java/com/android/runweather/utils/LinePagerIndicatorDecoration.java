@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.runweather.R;
+
 import java.util.Objects;
 
 /**
@@ -97,7 +99,7 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
 
     private void drawInactiveIndicators(Canvas c, float indicatorStartX, float indicatorPosY,
                                         int itemCount) {
-        mPaint.setColor(Color.BLACK);
+        mPaint.setColor(Color.parseColor("#73626f"));
 
 // width of item indicator including padding
         final float itemWidth = mIndicatorItemLength + mIndicatorItemPadding;
@@ -114,7 +116,7 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
 
     private void drawHighlights(Canvas c, float indicatorStartX, float indicatorPosY,
                                 int highlightPosition, float progress, int itemCount) {
-        mPaint.setColor(Color.BLUE);
+        mPaint.setColor(Color.parseColor("#adc5b9"));
 
 // width of item indicator including padding
         final float itemWidth = mIndicatorItemLength + mIndicatorItemPadding;
