@@ -13,10 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.runweather.R;
-
 import java.util.Objects;
-
 /**
  * Displays an indicator to show how many cards and current position in the forecast carousel
  * See https://github.com/bleeding182/recyclerviewItemDecorations

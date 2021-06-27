@@ -17,7 +17,7 @@ android {
         buildConfigField "String", "PLACES_KEY", CONFIG("placesKey")
         buildConfigField "String", "WEATHER_KEY", CONFIG("weatherKey")
         applicationId "com.android.runweather"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

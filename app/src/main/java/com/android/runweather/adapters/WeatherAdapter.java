@@ -2,7 +2,6 @@ package com.android.runweather.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import static com.android.runweather.utils.Constants.*;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,8 @@ import com.android.runweather.utils.FormattingUtils;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.android.runweather.utils.Constants.ONE_HUNDRED;
+import static com.android.runweather.utils.Constants.ZERO;
 import static com.android.runweather.utils.FormattingUtils.getDate;
 import static com.android.runweather.utils.FormattingUtils.sdf;
 import static org.apache.commons.lang3.text.WordUtils.capitalize;
@@ -79,6 +80,25 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
             e.printStackTrace();
         }
 
+        determineClothing(holder, item, description);
+    }
+
+    private void determineClothing(@NonNull ViewHolder holder, Hourly item, String description) {
+        if (description.contains("Snow") || item.getFeels_like() < 5) {
+            setClothesViews(holder, R.drawable.winter, "It is very cold");
+        } else if (description.contains("Rain")) {
+            setClothesViews(holder, R.drawable.raining, "It is very wet");
+        } else if (item.getFeels_like() > 10) {
+            setClothesViews(holder, R.drawable.summer, "It is very hot");
+        } else {
+            setClothesViews(holder, R.drawable.autum, "It is very temperate");
+        }
+    }
+
+    public void setClothesViews(@NonNull WeatherAdapter.ViewHolder holder, int icon, String text) {
+        holder.clothesImg.setImageResource(icon);
+        holder.clothesDescription.setText(text);
+
     }
 
     @Override
@@ -94,7 +114,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         private final TextView temp;
         private final TextView feelsLike;
         private final TextView speed;
+        private final TextView clothesDescription;
         private final ImageView img;
+        private final ImageView clothesImg;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,8 +127,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
             temp = itemView.findViewById(R.id.temp);
             feelsLike = itemView.findViewById(R.id.feelsLike);
             speed = itemView.findViewById(R.id.speed);
+            clothesDescription = itemView.findViewById(R.id.clothesTV);
 
             img = itemView.findViewById(R.id.condIconHourly);
+            clothesImg = itemView.findViewById(R.id.clothesIV);
         }
 
 
