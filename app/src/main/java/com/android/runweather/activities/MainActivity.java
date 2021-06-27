@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-
         // add pager behavior
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mRecyclerView);
@@ -140,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         clouds = findViewById(R.id.clouds);
         currentDesc = findViewById(R.id.currentDesc);
         currentWind = findViewById(R.id.currentWind);
+
 
     }
 
