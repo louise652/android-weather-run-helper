@@ -43,6 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         holder.mTitle.setText(data.get(position));
+        holder.mTitle.setTextColor(Color.parseColor("#3d3d38"));
 
         holder.imageView.setOnTouchListener((v, event) -> {
             {
@@ -68,7 +69,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onRowSelected(MyViewHolder myViewHolder) {
-        myViewHolder.rowView.setBackgroundColor(Color.parseColor("#FEDBD0"));
+        myViewHolder.rowView.setBackgroundColor(Color.parseColor("#dff8eb"));
 
     }
 
