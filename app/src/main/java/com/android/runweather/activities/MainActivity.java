@@ -172,19 +172,16 @@ public class MainActivity extends AppCompatActivity {
 
         List<Hourly> hourlyWeatherList = weatherList.getHourly();
         //Set the hourly weather list of cards (default 24hours results)
-        List<Hourly> hourlyList = new ArrayList<>();
+        List<Hourly> hourlyList = returnOrderedResults(hourlyWeatherList, startTime, endTime);
 
         SharedPreferences orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
 
-        if (!orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
-            for (int result = startTime; result < endTime; result++) {
-                hourlyList.add(hourlyWeatherList.get(result));
+        // sort list by weather prefs if custom ordering required
+        if (orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
 
-            }
-        } else {
             int sunrise = weatherList.getCurrent().getSunrise();
             int sunset = weatherList.getCurrent().getSunset();
-            hourlyList = TimeSlotHelper.getBestTime(hourlyWeatherList, weatherPrefs, sunrise, sunset);
+            hourlyList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs, sunrise, sunset);
         }
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
@@ -200,6 +197,19 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    /*
+     * only grab the first x results defined by time window selection
+     */
+    private  List<Hourly> returnOrderedResults( List<Hourly> hourlyWeatherList, int start, int end){
+
+       List<Hourly> returnedResults = new ArrayList<>();
+
+        for (int result = start; result < end; result++) {
+            returnedResults.add(hourlyWeatherList.get(result));
+        }
+        return returnedResults;
     }
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
