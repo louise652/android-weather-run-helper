@@ -139,11 +139,17 @@
 
     <LinearLayout
         android:paddingTop="10dp"
-        android:layout_width="275dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
-
+        <ImageView
+            android:id="@+id/hiVisIV"
+            android:src="@drawable/hivis"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_gravity="end"
+            android:contentDescription="HiVisVest" />
         <ImageView
             android:id="@+id/clothesIV"
             android:layout_width="150dp"
