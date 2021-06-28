@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -65,6 +66,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
     public SharedPreferences timePrefs, weatherPrefs, orderPrefs;
     RadioButton customOrder, timeOrder;
+    RadioGroup customOrderRG;
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
     LinearLayout customSelection, weatherPrefsLL;
@@ -93,17 +95,27 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         setupCustomTimePickerListeners();
         setupTimeRangePickerListener();
-
-
     }
 
     private void instantiateWeatherPrefPicker() {
+        customOrderRG = findViewById(R.id.customOrderRG);
         customOrder = findViewById(R.id.radioCustom);
         timeOrder = findViewById(R.id.radioTime);
-
         weatherPrefsLL = findViewById(R.id.weatherPrefsLL);
+        orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
+
+        if (!orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
+            customOrderRG.check((R.id.radioTime));
+            weatherPrefsLL.setVisibility(View.INVISIBLE);
+        }else{
+            customOrderRG.check((R.id.radioCustom));
+            weatherPrefsLL.setVisibility(View.VISIBLE);
+        }
+
         weatherPrefs = getSharedPreferences(WEATHER_PREFERENCES, Context.MODE_PRIVATE);
         recyclerView = findViewById(R.id.weatherPrefsRV);
+
+
 
         populateRecyclerView();
     }
@@ -337,9 +349,8 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         weatherPrefEditor.apply();
 
-        orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor orderPrefEditor = orderPrefs.edit();
-        orderPrefEditor.putBoolean(CUSTOM_ORDER, customOrder.isSelected());
+        orderPrefEditor.putBoolean(CUSTOM_ORDER, customOrder.isChecked());
         orderPrefEditor.apply();
 
         Toast.makeText(getApplicationContext(), SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
