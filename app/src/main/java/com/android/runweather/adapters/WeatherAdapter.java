@@ -85,19 +85,25 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
     private void determineClothing(@NonNull ViewHolder holder, Hourly item, String description) {
         if (description.contains("Snow") || item.getFeels_like() < 5) {
-            setClothesViews(holder, R.drawable.winter, "It is very cold");
+            setClothesViews(holder, R.drawable.winter, "It is very cold", item.isDaylight);
         } else if (description.contains("Rain")) {
-            setClothesViews(holder, R.drawable.raining, "It is very wet");
+            setClothesViews(holder, R.drawable.raining, "It is very wet",  item.isDaylight);
         } else if (item.getFeels_like() > 10) {
-            setClothesViews(holder, R.drawable.summer, "It is very hot");
+            setClothesViews(holder, R.drawable.summer, "It is very hot",  item.isDaylight);
         } else {
-            setClothesViews(holder, R.drawable.autum, "It is very temperate");
+            setClothesViews(holder, R.drawable.autum, "It is very temperate",  item.isDaylight);
         }
     }
 
-    public void setClothesViews(@NonNull WeatherAdapter.ViewHolder holder, int icon, String text) {
+    public void setClothesViews(@NonNull WeatherAdapter.ViewHolder holder, int icon, String text, boolean isDaytime) {
         holder.clothesImg.setImageResource(icon);
         holder.clothesDescription.setText(text);
+
+        if (!isDaytime){
+            holder.hiVisImg.setVisibility(View.VISIBLE);
+        }else{
+            holder.hiVisImg.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -116,7 +122,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         private final TextView speed;
         private final TextView clothesDescription;
         private final ImageView img;
-        private final ImageView clothesImg;
+        private final ImageView clothesImg, hiVisImg;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -131,6 +137,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
             img = itemView.findViewById(R.id.condIconHourly);
             clothesImg = itemView.findViewById(R.id.clothesIV);
+            hiVisImg = itemView.findViewById(R.id.hiVisIV);
         }
 
 

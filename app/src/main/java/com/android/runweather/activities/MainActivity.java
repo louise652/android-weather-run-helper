@@ -30,6 +30,8 @@ import com.android.runweather.utils.LocationUtil;
 import com.android.runweather.utils.TimeSlotHelper;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +52,7 @@ import static com.android.runweather.utils.Constants.ZERO;
 import static com.android.runweather.utils.FormattingUtils.getDate;
 import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
 import static com.android.runweather.utils.FormattingUtils.sdf;
+import static java.time.ZoneOffset.UTC;
 import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 /**
@@ -170,17 +173,20 @@ public class MainActivity extends AppCompatActivity {
         int startTime = timePrefs.getInt(START_TIME_INDEX, ZERO);
         int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
 
+        int sunrise = weatherList.getCurrent().getSunrise();
+        int sunset = weatherList.getCurrent().getSunset();
+
         List<Hourly> hourlyWeatherList = weatherList.getHourly();
         //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = returnOrderedResults(hourlyWeatherList, startTime, endTime);
+
+        hourlyList.forEach((item) ->setIsDaylight(item, sunrise, sunset));
 
         SharedPreferences orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
 
         // sort list by weather prefs if custom ordering required
         if (orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
 
-            int sunrise = weatherList.getCurrent().getSunrise();
-            int sunset = weatherList.getCurrent().getSunset();
             hourlyList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs, sunrise, sunset);
         }
 
@@ -249,5 +255,26 @@ public class MainActivity extends AppCompatActivity {
             // pager indicator
             mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
         }
+    }
+
+    /*
+     * Sets a flag if the hour is between sunrise and sunset
+     */
+
+    private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
+
+
+        Instant currentTimeInst = Instant.ofEpochSecond(item.getDt());
+        Instant sunriseTime = Instant.ofEpochSecond(sunrise);
+        Instant sunsetTime = Instant.ofEpochSecond(sunset);
+
+        LocalDateTime currentTime = LocalDateTime.ofInstant(currentTimeInst, UTC);
+        boolean isDaylight = (
+                currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
+                        &&
+                        currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC))
+        );
+
+        item.setDaylight(isDaylight);
     }
 }
