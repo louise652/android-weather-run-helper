@@ -42,7 +42,7 @@ public class TimeSlotHelper {
      * @return
      */
 
-    public static List<Hourly> getBestTime(List<Hourly> hourlyWeatherList, SharedPreferences weatherPrefs, int sunrise, int sunset) {
+    public static List<Hourly> getBestTime(List<Hourly> hourlyWeatherList, SharedPreferences weatherPrefs) {
 
         for (Hourly item : hourlyWeatherList) {
             int tempRank = getTempRank(item.getFeels_like());

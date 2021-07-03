@@ -70,6 +70,34 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences timePrefs, weatherPrefs;
     int sunriseHr, sunsetHr;
 
+    private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
+
+
+        Instant currentTimeInst = Instant.ofEpochSecond(item.getDt());
+
+        Instant sunriseTime = Instant.ofEpochSecond(sunrise);
+        Instant sunsetTime = Instant.ofEpochSecond(sunset);
+
+        LocalDateTime currentTime = LocalDateTime.ofInstant(currentTimeInst, UTC);
+
+
+        boolean isDaylight = (
+
+                // time is between sunrise and sunset today
+                (  currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
+                        &&
+                        currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC)))
+
+                        ||
+                        // time is between sunrise and sunset tomorrow
+                        (currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC).plusDays(1))
+                                &&
+                                currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC).plusDays(1)))
+        );
+
+        item.setDaylight(isDaylight);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -121,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void initComponents() {
 
         mRecyclerView = findViewById(R.id.recyclerview_rootview);
@@ -168,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void setFutureResultViews(WeatherVO weatherList) {
         int startTime = timePrefs.getInt(START_TIME_INDEX, ZERO);
         int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
@@ -180,14 +206,14 @@ public class MainActivity extends AppCompatActivity {
         //Set the hourly weather list of cards (default 24hours results)
         List<Hourly> hourlyList = returnOrderedResults(hourlyWeatherList, startTime, endTime);
 
-        hourlyList.forEach((item) ->setIsDaylight(item, sunrise, sunset));
+        hourlyList.forEach((item) -> setIsDaylight(item, sunrise, sunset));
 
         SharedPreferences orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
 
         // sort list by weather prefs if custom ordering required
         if (orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
 
-            hourlyList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs, sunrise, sunset);
+            hourlyList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs);
         }
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
@@ -208,15 +234,19 @@ public class MainActivity extends AppCompatActivity {
     /*
      * only grab the first x results defined by time window selection
      */
-    private  List<Hourly> returnOrderedResults( List<Hourly> hourlyWeatherList, int start, int end){
+    private List<Hourly> returnOrderedResults(List<Hourly> hourlyWeatherList, int start, int end) {
 
-       List<Hourly> returnedResults = new ArrayList<>();
+        List<Hourly> returnedResults = new ArrayList<>();
 
         for (int result = start; result < end; result++) {
             returnedResults.add(hourlyWeatherList.get(result));
         }
         return returnedResults;
     }
+
+    /*
+     * Sets a flag if the hour is between sunrise and sunset
+     */
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
         Current currentWeatherVO = weatherList.getCurrent();
@@ -255,26 +285,5 @@ public class MainActivity extends AppCompatActivity {
             // pager indicator
             mRecyclerView.addItemDecoration(new LinePagerIndicatorDecoration());
         }
-    }
-
-    /*
-     * Sets a flag if the hour is between sunrise and sunset
-     */
-
-    private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
-
-
-        Instant currentTimeInst = Instant.ofEpochSecond(item.getDt());
-        Instant sunriseTime = Instant.ofEpochSecond(sunrise);
-        Instant sunsetTime = Instant.ofEpochSecond(sunset);
-
-        LocalDateTime currentTime = LocalDateTime.ofInstant(currentTimeInst, UTC);
-        boolean isDaylight = (
-                currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
-                        &&
-                        currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC))
-        );
-
-        item.setDaylight(isDaylight);
     }
 }
