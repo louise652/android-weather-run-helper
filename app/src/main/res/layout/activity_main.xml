@@ -13,6 +13,7 @@
 
     <!--city label -->
     <TextView
+        android:layout_gravity="center"
         android:id="@+id/cityText"
         android:textAppearance="?attr/textAppearanceSubtitle2"
         style="?android:attr/textAppearanceLarge"
@@ -22,12 +23,12 @@
     <TextView
         android:textAppearance="?attr/textAppearanceSubtitle2"
         style="?android:attr/textAppearanceMedium"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/currentWeatherLabel" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/currentDetails"
         card_view:contentPadding="10dp"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true"
@@ -174,6 +175,7 @@
         android:layout_width="wrap_content"
         android:textAppearance="?attr/textAppearanceSubtitle2"
         style="?android:attr/textAppearanceMedium"
+        android:layout_gravity="center"
         android:text="@string/weather_forecast"
         android:layout_height="wrap_content" />
 

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="10dp"
@@ -9,10 +10,9 @@
     android:paddingRight="10dp"
     android:paddingBottom="10dp">
 
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/weatherItem"
-        android:layout_width="275dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
@@ -134,28 +134,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
-        android:paddingTop="10dp"
-        android:layout_width="275dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
+
+        <ImageView
+            android:id="@+id/hiVisIV"
+            android:layout_width="50dp"
+            android:layout_height="150dp"
+            android:layout_gravity="end"
+            android:contentDescription="@string/hivisvest"
+            android:src="@drawable/hivis" />
 
         <ImageView
             android:id="@+id/clothesIV"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:paddingEnd="10dp"
             android:layout_gravity="end"
-            android:contentDescription="@string/clothes" />
-
-        <TextView
-            android:layout_gravity="center"
-            android:id="@+id/clothesTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:contentDescription="@string/clothes"
+            android:paddingEnd="10dp" />
     </LinearLayout>
 </LinearLayout>

@@ -30,6 +30,8 @@ import com.android.runweather.utils.LocationUtil;
 import com.android.runweather.utils.TimeSlotHelper;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +52,7 @@ import static com.android.runweather.utils.Constants.ZERO;
 import static com.android.runweather.utils.FormattingUtils.getDate;
 import static com.android.runweather.utils.FormattingUtils.getHourOfDayFromTime;
 import static com.android.runweather.utils.FormattingUtils.sdf;
+import static java.time.ZoneOffset.UTC;
 import static org.apache.commons.lang3.text.WordUtils.capitalize;
 
 /**
@@ -66,6 +69,34 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     SharedPreferences timePrefs, weatherPrefs;
     int sunriseHr, sunsetHr;
+
+    private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
+
+
+        Instant currentTimeInst = Instant.ofEpochSecond(item.getDt());
+
+        Instant sunriseTime = Instant.ofEpochSecond(sunrise);
+        Instant sunsetTime = Instant.ofEpochSecond(sunset);
+
+        LocalDateTime currentTime = LocalDateTime.ofInstant(currentTimeInst, UTC);
+
+
+        boolean isDaylight = (
+
+                // time is between sunrise and sunset today
+                (  currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
+                        &&
+                        currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC)))
+
+                        ||
+                        // time is between sunrise and sunset tomorrow
+                        (currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC).plusDays(1))
+                                &&
+                                currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC).plusDays(1)))
+        );
+
+        item.setDaylight(isDaylight);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void initComponents() {
 
         mRecyclerView = findViewById(R.id.recyclerview_rootview);
@@ -165,26 +195,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void setFutureResultViews(WeatherVO weatherList) {
         int startTime = timePrefs.getInt(START_TIME_INDEX, ZERO);
         int endTime = timePrefs.getInt(END_TIME_INDEX, TWELVE);
 
+        int sunrise = weatherList.getCurrent().getSunrise();
+        int sunset = weatherList.getCurrent().getSunset();
+
         List<Hourly> hourlyWeatherList = weatherList.getHourly();
         //Set the hourly weather list of cards (default 24hours results)
-        List<Hourly> hourlyList = new ArrayList<>();
+        List<Hourly> hourlyList = returnOrderedResults(hourlyWeatherList, startTime, endTime);
+
+        hourlyList.forEach((item) -> setIsDaylight(item, sunrise, sunset));
 
         SharedPreferences orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
 
-        if (!orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
-            for (int result = startTime; result < endTime; result++) {
-                hourlyList.add(hourlyWeatherList.get(result));
+        // sort list by weather prefs if custom ordering required
+        if (orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
 
-            }
-        } else {
-            int sunrise = weatherList.getCurrent().getSunrise();
-            int sunset = weatherList.getCurrent().getSunset();
-            hourlyList = TimeSlotHelper.getBestTime(hourlyWeatherList, weatherPrefs, sunrise, sunset);
+            hourlyList = TimeSlotHelper.getBestTime(hourlyList, weatherPrefs);
         }
 
         WeatherAdapter mainRecyclerAdapter = new WeatherAdapter(this, hourlyList);
@@ -201,6 +230,23 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+
+    /*
+     * only grab the first x results defined by time window selection
+     */
+    private List<Hourly> returnOrderedResults(List<Hourly> hourlyWeatherList, int start, int end) {
+
+        List<Hourly> returnedResults = new ArrayList<>();
+
+        for (int result = start; result < end; result++) {
+            returnedResults.add(hourlyWeatherList.get(result));
+        }
+        return returnedResults;
+    }
+
+    /*
+     * Sets a flag if the hour is between sunrise and sunset
+     */
 
     private void setCurrentWeatherFields(WeatherVO weatherList) {
         Current currentWeatherVO = weatherList.getCurrent();

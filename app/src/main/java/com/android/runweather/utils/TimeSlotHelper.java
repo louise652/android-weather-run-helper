@@ -4,8 +4,6 @@ import android.content.SharedPreferences;
 
 import com.android.runweather.models.Hourly;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -21,7 +19,6 @@ import static com.android.runweather.utils.Constants.SUNLIGHT;
 import static com.android.runweather.utils.Constants.TEMP;
 import static com.android.runweather.utils.Constants.WIND;
 import static com.android.runweather.utils.Constants.ZERO;
-import static java.time.ZoneOffset.UTC;
 
 
 /**
@@ -45,12 +42,11 @@ public class TimeSlotHelper {
      * @return
      */
 
-    public static List<Hourly> getBestTime(List<Hourly> hourlyWeatherList, SharedPreferences weatherPrefs, int sunrise, int sunset) {
+    public static List<Hourly> getBestTime(List<Hourly> hourlyWeatherList, SharedPreferences weatherPrefs) {
 
         for (Hourly item : hourlyWeatherList) {
             int tempRank = getTempRank(item.getFeels_like());
             item.setTempRank(tempRank);
-            setIsDaylight(item, sunrise, sunset);
         }
         Comparator<Hourly> comparator = getHourlyComparator(weatherPrefs);
         hourlyWeatherList.sort(comparator);
@@ -124,26 +120,7 @@ public class TimeSlotHelper {
         return comparator;
     }
 
-    /*
-     * Sets a flag if the hour is between sunrise and sunset
-     */
 
-    private static void setIsDaylight(Hourly item, int sunrise, int sunset) {
-
-
-        Instant currentTimeInst = Instant.ofEpochSecond(item.getDt());
-        Instant sunriseTime = Instant.ofEpochSecond(sunrise);
-        Instant sunsetTime = Instant.ofEpochSecond(sunset);
-
-        LocalDateTime currentTime = LocalDateTime.ofInstant(currentTimeInst, UTC);
-        boolean isDaylight = (
-                currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
-                        &&
-                        currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC))
-        );
-
-        item.setDaylight(isDaylight);
-    }
 
     /*
      * Ranks the desirability of a 'feels like' temp
