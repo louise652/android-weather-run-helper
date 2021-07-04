@@ -16,6 +16,7 @@ android {
     defaultConfig {
         buildConfigField "String", "PLACES_KEY", CONFIG("placesKey")
         buildConfigField "String", "WEATHER_KEY", CONFIG("weatherKey")
+        buildConfigField "String", "EMAIL", CONFIG("email")
         applicationId "com.android.runweather"
         minSdkVersion 26
         targetSdkVersion 30

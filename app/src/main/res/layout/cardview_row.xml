@@ -28,7 +28,7 @@
             android:layout_centerVertical="true"
             android:contentDescription="@string/drag_icon"
             android:padding="8dp"
-            android:src="@drawable/ic_baseline_drag_handle_24" />
+            android:src="@drawable/drag_handle" />
 
     </RelativeLayout>
 

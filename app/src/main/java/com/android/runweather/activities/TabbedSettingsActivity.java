@@ -53,10 +53,25 @@ public class TabbedSettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        return true;
+        switch (item.getItemId()) {
+            case R.id.menu_home:
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+                return true;
+
+            case R.id.menu_email:
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{"lmccloy652+JogOn@gmail.com"});
+                email.putExtra(Intent.EXTRA_SUBJECT, "Jog On feedback");
+                email.putExtra(Intent.EXTRA_TEXT, "");
+                email.setType("plain/text");
+                startActivity(Intent.createChooser(email, "Choose an Email client"));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
