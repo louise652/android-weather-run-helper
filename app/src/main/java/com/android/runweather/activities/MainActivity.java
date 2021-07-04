@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.runweather.R;
 import com.android.runweather.adapters.WeatherAdapter;
@@ -119,6 +120,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, LOCATION_ERROR_TXT, Toast.LENGTH_LONG).show();
         }
+
+        final SwipeRefreshLayout pullToRefresh = findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(() -> {
+            getWeatherResults();
+            pullToRefresh.setRefreshing(false);
+        });
     }
 
     @Override
