@@ -29,4 +29,8 @@
     <string name="weather_settings">Weather Settings</string>
     <string name="home">Home</string>
     <string name="time_settings">Time Settings</string>
+    <string name="about">About\n\nJog On has been designed to provide suggestions on weather conditions and appropriate clothing for running.</string>
+    <string name="howToUse">How to use\n\nYou can select a time window to go for a run and customise your weather preferences.\n\nJog On will then display the current weather conditions and display a list of the best times for your run and suggestions on what to wear.</string>
+    <string name="settingsTimeHelp">Time Settings\n\nFrom the Home page, you can click on the Settings cog in the top right.\n\nFrom here, you can select your preferred time window from a defined list or specify your own time window.\nClick save to apply changes and click the Home icon to return to the main page.</string>
+    <string name="settingsWeatherHelp">Weather Settings\n\nFrom the Home page, you can click on the Settings cog in the top right.\n\nFrom here, you can select your preferred weather conditions. Select if you want the results arranged by nearest time or by your own preference\nIf selecting your own preferences, drag and drop the various weather conditons in order of preference, with the most preferred at the top and least at the bottom.\n\nClick save to apply changes and click the Home icon to return to the main page</string>
 </resources>

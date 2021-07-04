@@ -9,15 +9,31 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.runweather.R;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 public class HelpActivity extends AppCompatActivity {
+
+    ExpandableTextView aboutTxt, settingsWeatherText, howToText, settingsTimeText;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_help);
+        aboutTxt = findViewById(R.id.about_text_view);
+        aboutTxt.setText(getString(R.string.about));
 
+        howToText = findViewById(R.id.how_to_text_view);
+        howToText.setText(getString(R.string.howToUse));
+
+        settingsTimeText = findViewById(R.id.settings_time_text_view);
+        settingsTimeText.setText(getString(R.string.settingsTimeHelp));
+
+        settingsWeatherText = findViewById(R.id.settings_weather_text_view);
+        settingsWeatherText.setText(getString(R.string.settingsWeatherHelp));
     }
 
     // Add a home button to menu
