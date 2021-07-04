@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_settings:
-                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent settingsIntent = new Intent(MainActivity.this, TabbedSettingsActivity.class);
                 settingsIntent.putExtra(SUNRISE, sunriseHr);
                 settingsIntent.putExtra(SUNSET, sunsetHr);
                 startActivity(settingsIntent);
