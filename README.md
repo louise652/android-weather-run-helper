@@ -35,3 +35,4 @@ Screenshots of UI as of 3rd July 2021. Images will be updated as UI changes are 
 ![Clothes Suggestion Dialog](screenshots/ScreenshotSuggestion.png)
 ![Weather Settings Screen 1](screenshots/ScreenshotSettings1.png)
 ![Weather Settings Screen 2](screenshots/ScreenshotSettings2.png)
+![Help Screen](screenshots/ScreenshotHelp.png)
