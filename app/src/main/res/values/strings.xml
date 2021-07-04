@@ -26,4 +26,7 @@
     <string name="order_by_time">Order by time</string>
     <string name="clothes">Clothes</string>
     <string name="hivisvest">HiVisVest</string>
+    <string name="weather_settings">Weather Settings</string>
+    <string name="home">Home</string>
+    <string name="time_settings">Time Settings</string>
 </resources>

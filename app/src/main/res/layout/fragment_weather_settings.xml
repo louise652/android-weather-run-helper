@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,59 +7,8 @@
     android:layout_centerHorizontal="true"
     android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:textAppearance="?attr/textAppearanceSubtitle2"
-        android:text="@string/time_window_selection"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/timeSelection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/spinnerItems"
-        android:paddingTop="10dp"
-        android:prompt="@string/select_preferred_time_range"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/customSelection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/timeSelection"
-        app:layout_constraintTop_toTopOf="@+id/timeSelection">
-
-        <NumberPicker
-            android:id="@+id/hourFrom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/to" />
-
-        <NumberPicker
-            android:id="@+id/hourTo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
-    </LinearLayout>
-
     <RadioGroup
+        android:padding="10dp"
         android:id="@+id/customOrderRG"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,15 +16,13 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/customSelection">
+        app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
             android:id="@+id/radioTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:onClick="onTimeAscClick"
             android:padding="10dp"
             android:text="@string/order_by_time" />
 
@@ -83,13 +30,13 @@
             android:id="@+id/radioCustom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onCustomPrefClick"
             android:padding="10dp"
             android:text="@string/custom_order"
             app:layout_constraintEnd_toEndOf="parent" />
     </RadioGroup>
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:id="@+id/weatherPrefsLL"
         android:visibility="invisible"
         android:layout_width="match_parent"
@@ -99,6 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/customOrderRG">
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -107,6 +55,7 @@
             android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="10dp"
             android:id="@+id/weatherPrefsRV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,19 +67,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="bottom|center">
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/saveWeatherSettings"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:onClick="savePrefs"
             android:padding="10dp"
             android:text="@string/save">
 
         </com.google.android.material.button.MaterialButton>
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

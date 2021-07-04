@@ -1,180 +1,66 @@
-package com.android.runweather.activities;
+package com.android.runweather.fragments;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 
 import com.android.runweather.R;
-import com.android.runweather.adapters.RecyclerViewAdapter;
-import com.android.runweather.interfaces.StartDragListener;
-import com.android.runweather.utils.ItemMoveCallback;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Map;
 
 import static com.android.runweather.utils.Constants.CUSTOM_END_TIME;
-import static com.android.runweather.utils.Constants.CUSTOM_ORDER;
 import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
 import static com.android.runweather.utils.Constants.DAYLIGHT_ERROR_TXT;
 import static com.android.runweather.utils.Constants.EIGHT;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
 import static com.android.runweather.utils.Constants.FOUR;
 import static com.android.runweather.utils.Constants.ONE;
-import static com.android.runweather.utils.Constants.ORDER_PREFERENCES;
-import static com.android.runweather.utils.Constants.PREF_A;
-import static com.android.runweather.utils.Constants.PREF_B;
-import static com.android.runweather.utils.Constants.PREF_C;
-import static com.android.runweather.utils.Constants.PREF_D;
-import static com.android.runweather.utils.Constants.RAIN;
 import static com.android.runweather.utils.Constants.SETTINGS_SAVED;
 import static com.android.runweather.utils.Constants.START_TIME_INDEX;
-import static com.android.runweather.utils.Constants.SUNLIGHT;
 import static com.android.runweather.utils.Constants.SUNRISE;
 import static com.android.runweather.utils.Constants.SUNSET;
-import static com.android.runweather.utils.Constants.TEMP;
 import static com.android.runweather.utils.Constants.TIME_PREFERENCES;
 import static com.android.runweather.utils.Constants.TIME_PREF_SELECTED;
 import static com.android.runweather.utils.Constants.TWELVE;
 import static com.android.runweather.utils.Constants.TWENTY_FOUR;
 import static com.android.runweather.utils.Constants.TWENTY_THREE;
 import static com.android.runweather.utils.Constants.TWO;
-import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
-import static com.android.runweather.utils.Constants.WIND;
 import static com.android.runweather.utils.Constants.ZERO;
 
-/**
- * Activity to handle selecting either a predefined time window or custom time range to narrow down results.
- */
 
-public class SettingsActivity extends AppCompatActivity implements StartDragListener {
+public class TimeSettingsFragment extends Fragment implements View.OnClickListener {
 
-    public SharedPreferences timePrefs, weatherPrefs, orderPrefs;
-    RadioButton customOrder, timeOrder;
-    RadioGroup customOrderRG;
+    public SharedPreferences timePrefs;
+
     Spinner timeRange;
     NumberPicker hourFrom, hourTo;
-    LinearLayout customSelection, weatherPrefsLL;
-    RecyclerView recyclerView;
-    RecyclerViewAdapter mAdapter;
-    ItemTouchHelper touchHelper;
+    LinearLayout customSelection;
+    Button saveTimeSettings;
     private int startTimeIndex, endTimeIndex, itemSelected, hoursUntilTomorrow, currentHour, customFromHr, customToHr, sunrise, sunset;
+
+    public TimeSettingsFragment() {
+        // Required empty public constructor
+    }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         Calendar calendar = Calendar.getInstance();
         currentHour = calendar.get(Calendar.HOUR_OF_DAY);
         hoursUntilTomorrow = TWENTY_FOUR - currentHour;
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_settings);
-
-        instantiateTimeComponents();
-        instantiateWeatherPrefPicker();
-
-        getUserTimePrefs();
-
-        setNumberPickerVals(hourFrom, customFromHr);
-        setNumberPickerVals(hourTo, customToHr);
-
-        setupCustomTimePickerListeners();
-        setupTimeRangePickerListener();
-    }
-
-    private void instantiateWeatherPrefPicker() {
-        customOrderRG = findViewById(R.id.customOrderRG);
-        customOrder = findViewById(R.id.radioCustom);
-        timeOrder = findViewById(R.id.radioTime);
-        weatherPrefsLL = findViewById(R.id.weatherPrefsLL);
-        orderPrefs = getSharedPreferences(ORDER_PREFERENCES, Context.MODE_PRIVATE);
-
-        if (!orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
-            customOrderRG.check((R.id.radioTime));
-            weatherPrefsLL.setVisibility(View.INVISIBLE);
-        }else{
-            customOrderRG.check((R.id.radioCustom));
-            weatherPrefsLL.setVisibility(View.VISIBLE);
-        }
-
-        weatherPrefs = getSharedPreferences(WEATHER_PREFERENCES, Context.MODE_PRIVATE);
-        recyclerView = findViewById(R.id.weatherPrefsRV);
-
-
-
-        populateRecyclerView();
-    }
-
-    /*
-     * Add the adapter to allow the user to drag/drop their preferred weather conditions
-     */
-    private void populateRecyclerView() {
-
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-
-        ArrayList<String> stringArrayList = setupOrderedWeatherPrefs();
-        mAdapter = new RecyclerViewAdapter(stringArrayList, this);
-
-        ItemTouchHelper.Callback callback =
-                new ItemMoveCallback(mAdapter);
-        touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerView);
-
-        recyclerView.setAdapter(mAdapter);
-
-        mAdapter.notifyDataSetChanged();
-
-    }
-
-    /*
-     * Sets default ordering if user prefs are not set
-     */
-    private ArrayList<String> setupOrderedWeatherPrefs() {
-        ArrayList<String> stringArrayList = new ArrayList<>();
-        //setting defaults if empty
-        if (weatherPrefs.getString(PREF_A, "").isEmpty()) {
-            stringArrayList.add(SUNLIGHT);
-            stringArrayList.add(RAIN);
-            stringArrayList.add(TEMP);
-            stringArrayList.add(WIND);
-        } else {
-
-            //otherwise loop through prefs in order and add value to list
-            Map<String, ?> prefsKeys = weatherPrefs.getAll();
-            //loop through each pref and add the comparator to order appropriately
-            ArrayList<String> prefsString = new ArrayList<>(Arrays.asList(PREF_A, PREF_B, PREF_C, PREF_D));
-
-            for (String pref : prefsString) {
-                for (Map.Entry<String, ?> entry : prefsKeys.entrySet()) {
-                    if (entry.getKey().equals(pref)) { //loop through secondary prefs and order
-                        stringArrayList.add(entry.getValue().toString());
-                    }
-                }
-            }
-        }
-        return stringArrayList;
-    }
-
-    @Override
-    public void requestDrag(RecyclerView.ViewHolder viewHolder) {
-        touchHelper.startDrag(viewHolder);
     }
 
     /*
@@ -187,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 customSelection.setVisibility(View.INVISIBLE);
                 itemSelected = position;
-                Intent intent = getIntent();
+                Intent intent = getActivity().getIntent();
                 sunrise = intent.getIntExtra(SUNRISE, ZERO);
                 sunset = intent.getIntExtra(SUNSET, TWENTY_FOUR);
 
@@ -221,18 +107,6 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
                 endTimeIndex = startTimeIndex + (customToHr + (TWENTY_FOUR - customFromHr));
             }
         });
-    }
-
-    private void instantiateTimeComponents() {
-        timeRange = findViewById(R.id.timeSelection);
-        customSelection = findViewById(R.id.customSelection);
-        hourFrom = findViewById(R.id.hourFrom);
-        hourTo = findViewById(R.id.hourTo);
-        timePrefs = getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
-
-        //Show the time range the user has previously selected or default to option 1 (next 4 hours)
-        int spinnerPosition = timePrefs.getInt(TIME_PREF_SELECTED, 1);
-        timeRange.setSelection(spinnerPosition);
     }
 
     /*
@@ -293,7 +167,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
     private void setDaytimeIndexes() {
 
         if (currentHour >= sunset) {
-            Toast.makeText(getApplicationContext(), DAYLIGHT_ERROR_TXT, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), DAYLIGHT_ERROR_TXT, Toast.LENGTH_SHORT).show();
             //default to next twelve hours
             startTimeIndex = ZERO;
             endTimeIndex = TWELVE;
@@ -325,11 +199,41 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
         }
     }
 
-    /*
-     * Button saves user preferences and loads up suggested timeslots accordingly
-     */
-    public void savePrefs(View view) {
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_time_settings, container, false);
+        // Inflate the layout for this fragment
+        timeRange = view.findViewById(R.id.timeSelection);
+        customSelection = view.findViewById(R.id.customSelection);
+        hourFrom = view.findViewById(R.id.hourFrom);
+        hourTo = view.findViewById(R.id.hourTo);
+        timePrefs = this.getActivity().getSharedPreferences(TIME_PREFERENCES, Context.MODE_PRIVATE);
+
+        //Show the time range the user has previously selected or default to option 1 (next 4 hours)
+        int spinnerPosition = timePrefs.getInt(TIME_PREF_SELECTED, 1);
+        timeRange.setSelection(spinnerPosition);
+
+        getUserTimePrefs();
+
+        setNumberPickerVals(hourFrom, customFromHr);
+        setNumberPickerVals(hourTo, customToHr);
+
+        setupCustomTimePickerListeners();
+        setupTimeRangePickerListener();
+
+        saveTimeSettings = view.findViewById(R.id.saveTimeSettings);
+        saveTimeSettings.setOnClickListener(this);
+
+        return view;
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
         SharedPreferences.Editor timePrefEditor = timePrefs.edit();
 
         timePrefEditor.putInt(START_TIME_INDEX, startTimeIndex);
@@ -341,28 +245,7 @@ public class SettingsActivity extends AppCompatActivity implements StartDragList
 
         timePrefEditor.apply();
 
-        SharedPreferences.Editor weatherPrefEditor = weatherPrefs.edit();
-        weatherPrefEditor.putString(PREF_A, mAdapter.data.get(0));
-        weatherPrefEditor.putString(PREF_B, mAdapter.data.get(1));
-        weatherPrefEditor.putString(PREF_C, mAdapter.data.get(2));
-        weatherPrefEditor.putString(PREF_D, mAdapter.data.get(3));
-
-        weatherPrefEditor.apply();
-
-        SharedPreferences.Editor orderPrefEditor = orderPrefs.edit();
-        orderPrefEditor.putBoolean(CUSTOM_ORDER, customOrder.isChecked());
-        orderPrefEditor.apply();
-
-        Toast.makeText(getApplicationContext(), SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-    }
-
-    public void onCustomPrefClick(View view) {
-        weatherPrefsLL.setVisibility(View.VISIBLE);
-    }
-
-    public void onTimeAscClick(View view) {
-        weatherPrefsLL.setVisibility(View.INVISIBLE);
+        Toast.makeText(getContext(), SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
 
     }
 }
