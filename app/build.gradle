@@ -16,6 +16,7 @@ android {
     defaultConfig {
         buildConfigField "String", "PLACES_KEY", CONFIG("placesKey")
         buildConfigField "String", "WEATHER_KEY", CONFIG("weatherKey")
+        buildConfigField "String", "EMAIL", CONFIG("email")
         applicationId "com.android.runweather"
         minSdkVersion 26
         targetSdkVersion 30
@@ -50,6 +51,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.3'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.ms-square:expandableTextView:0.1.4'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
     //noinspection AnnotationProcessorOnCompilePath

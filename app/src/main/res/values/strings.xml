@@ -15,7 +15,6 @@
     <string name="precipitation">Precipitation:\u0020</string>
     <string name="settings">Settings</string>
     <string name="help">Help</string>
-    <string name="placeholder_help_text">Placeholder help text</string>
     <string name="select_preferred_time_range">Select preferred time range</string>
     <string name="to">to</string>
     <string name="save">Save</string>
@@ -29,4 +28,14 @@
     <string name="weather_settings">Weather Settings</string>
     <string name="home">Home</string>
     <string name="time_settings">Time Settings</string>
+    <string name="about_collapsed">About</string>
+    <string name="about_expanded">Jog On has been designed to provide suggestions on weather conditions and appropriate clothing for running.</string>
+    <string name="howToUse_collapsed">How to use</string>
+    <string name="howToUse_expanded">You can select a time window to go for a run and customise your weather preferences.\n\nJog On will then display the current weather conditions and display a list of the best times for your run and suggestions on what to wear.</string>
+    <string name="settingsTimeHelp_collapsed">Time Settings</string>
+    <string name="settingsTimeHelp_expanded">From the Home page, you can click on the Settings cog in the top right.\n\nFrom here, you can select your preferred time window from a defined list or specify your own time window.\nClick save to apply changes and click the Home icon to return to the main page.</string>
+    <string name="settingsWeatherHelp_collapsed">Weather Settings</string>
+    <string name="settingsWeatherHelp_expanded">From the Home page, you can click on the Settings cog in the top right.\n\nFrom here, you can select your preferred weather conditions. Select if you want the results arranged by nearest time or by your own preference\nIf selecting your own preferences, drag and drop the various weather conditons in order of preference, with the most preferred at the top and least at the bottom.\n\nClick save to apply changes and click the Home icon to return to the main page</string>
+    <string name="contact_collapsed">Get in Touch</string>
+    <string name="contact_expanded">Click on the email icon in the menu bar to contact the developer with any questions, issues, feedback or suggestions.</string>
 </resources>

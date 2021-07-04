@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isDaylight = (
 
                 // time is between sunrise and sunset today
-                (  currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
+                (currentTime.isAfter(LocalDateTime.ofInstant(sunriseTime, UTC))
                         &&
                         currentTime.isBefore(LocalDateTime.ofInstant(sunsetTime, UTC)))
 

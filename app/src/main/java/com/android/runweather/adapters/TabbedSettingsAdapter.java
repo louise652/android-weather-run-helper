@@ -10,27 +10,29 @@ import com.android.runweather.fragments.WeatherSettingsFragment;
 
 public class TabbedSettingsAdapter extends FragmentPagerAdapter {
     final int totalTabs;
-        public TabbedSettingsAdapter(FragmentManager fm, int totalTabs) {
-            super(fm);
-            this.totalTabs = totalTabs;
-        }
 
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return new TimeSettingsFragment();
-                case 1:
-                    return new WeatherSettingsFragment();
+    public TabbedSettingsAdapter(FragmentManager fm, int totalTabs) {
+        super(fm);
+        this.totalTabs = totalTabs;
+    }
 
-                default:
-                    return null;
-            }
-        }
-        @Override
-        public int getCount() {
-            return totalTabs;
+    @NonNull
+    @Override
+    public Fragment getItem(int position) {
+        switch (position) {
+            case 0:
+                return new TimeSettingsFragment();
+            case 1:
+                return new WeatherSettingsFragment();
+
+            default:
+                return null;
         }
     }
+
+    @Override
+    public int getCount() {
+        return totalTabs;
+    }
+}
 
