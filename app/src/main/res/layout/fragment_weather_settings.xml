@@ -77,7 +77,6 @@
             android:id="@+id/saveWeatherSettings"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:onClick="savePrefs"
             android:padding="10dp"
             android:text="@string/save">
 

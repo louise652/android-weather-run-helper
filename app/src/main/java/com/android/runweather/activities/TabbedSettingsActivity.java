@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
@@ -24,7 +25,7 @@ public class TabbedSettingsActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        final TabbedSettingsAdapter adapter = new TabbedSettingsAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount());
+        final TabbedSettingsAdapter adapter = new TabbedSettingsAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -52,7 +53,7 @@ public class TabbedSettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
         return true;

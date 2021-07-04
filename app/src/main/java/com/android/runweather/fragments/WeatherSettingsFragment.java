@@ -1,27 +1,23 @@
-package com.android.runweather.Fragments;
+package com.android.runweather.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
-
 import com.android.runweather.R;
-import com.android.runweather.activities.MainActivity;
 import com.android.runweather.adapters.RecyclerViewAdapter;
 import com.android.runweather.interfaces.StartDragListener;
 import com.android.runweather.utils.ItemMoveCallback;
@@ -30,10 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-import static com.android.runweather.utils.Constants.CUSTOM_END_TIME;
 import static com.android.runweather.utils.Constants.CUSTOM_ORDER;
-import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
-import static com.android.runweather.utils.Constants.END_TIME_INDEX;
 import static com.android.runweather.utils.Constants.ORDER_PREFERENCES;
 import static com.android.runweather.utils.Constants.PREF_A;
 import static com.android.runweather.utils.Constants.PREF_B;
@@ -41,10 +34,8 @@ import static com.android.runweather.utils.Constants.PREF_C;
 import static com.android.runweather.utils.Constants.PREF_D;
 import static com.android.runweather.utils.Constants.RAIN;
 import static com.android.runweather.utils.Constants.SETTINGS_SAVED;
-import static com.android.runweather.utils.Constants.START_TIME_INDEX;
 import static com.android.runweather.utils.Constants.SUNLIGHT;
 import static com.android.runweather.utils.Constants.TEMP;
-import static com.android.runweather.utils.Constants.TIME_PREF_SELECTED;
 import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
 import static com.android.runweather.utils.Constants.WIND;
 
@@ -59,7 +50,6 @@ public class WeatherSettingsFragment extends Fragment implements StartDragListen
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
     Button saveWeatherSettings;
-    private int startTimeIndex, endTimeIndex, itemSelected, hoursUntilTomorrow, currentHour, customFromHr, customToHr, sunrise, sunset;
 
     public WeatherSettingsFragment() {
         // Required empty public constructor

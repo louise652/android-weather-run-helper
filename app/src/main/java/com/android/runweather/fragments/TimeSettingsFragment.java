@@ -1,14 +1,9 @@
-package com.android.runweather.Fragments;
+package com.android.runweather.fragments;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,29 +11,22 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.android.runweather.R;
-import com.android.runweather.activities.MainActivity;
-import com.android.runweather.adapters.RecyclerViewAdapter;
 
 import java.util.Calendar;
 
 import static com.android.runweather.utils.Constants.CUSTOM_END_TIME;
-import static com.android.runweather.utils.Constants.CUSTOM_ORDER;
 import static com.android.runweather.utils.Constants.CUSTOM_START_TIME;
 import static com.android.runweather.utils.Constants.DAYLIGHT_ERROR_TXT;
 import static com.android.runweather.utils.Constants.EIGHT;
 import static com.android.runweather.utils.Constants.END_TIME_INDEX;
 import static com.android.runweather.utils.Constants.FOUR;
 import static com.android.runweather.utils.Constants.ONE;
-import static com.android.runweather.utils.Constants.PREF_A;
-import static com.android.runweather.utils.Constants.PREF_B;
-import static com.android.runweather.utils.Constants.PREF_C;
-import static com.android.runweather.utils.Constants.PREF_D;
 import static com.android.runweather.utils.Constants.SETTINGS_SAVED;
 import static com.android.runweather.utils.Constants.START_TIME_INDEX;
 import static com.android.runweather.utils.Constants.SUNRISE;
@@ -209,26 +197,6 @@ public class TimeSettingsFragment extends Fragment implements View.OnClickListen
         if (firstItem != null) {
             firstItem.setVisibility(View.INVISIBLE);
         }
-    }
-
-    /*
-     * Button saves user preferences and loads up suggested timeslots accordingly
-     */
-    public void savePrefs(View view) {
-
-        SharedPreferences.Editor timePrefEditor = timePrefs.edit();
-
-        timePrefEditor.putInt(START_TIME_INDEX, startTimeIndex);
-        timePrefEditor.putInt(END_TIME_INDEX, endTimeIndex);
-        timePrefEditor.putInt(TIME_PREF_SELECTED, itemSelected);
-
-        timePrefEditor.putInt(CUSTOM_START_TIME, customFromHr);
-        timePrefEditor.putInt(CUSTOM_END_TIME, customToHr);
-
-        timePrefEditor.apply();
-
-        Toast.makeText(getContext(), SETTINGS_SAVED, Toast.LENGTH_SHORT).show();
-
     }
 
 
