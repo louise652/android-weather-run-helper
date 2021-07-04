@@ -126,13 +126,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
 
         // attach click handler to weather item and clothes images
         List<View> obj = Arrays.asList(holder.weatherItem, holder.clothesImg, holder.hiVisImg);
-        obj.forEach((view)->view.setOnClickListener(v ->{
+        obj.forEach((view) -> view.setOnClickListener(v -> {
             attachClothesClickHandler(icon, clothesTxt, builder);
         }));
     }
 
     /*
-    * When you click on an image, dispaly dialogue with clothes tips
+     * When you click on an image, dispaly dialogue with clothes tips
      */
     private void attachClothesClickHandler(int icon, StringBuilder clothesTxt, AlertDialog.Builder builder) {
         AlertDialog alert = builder.create();

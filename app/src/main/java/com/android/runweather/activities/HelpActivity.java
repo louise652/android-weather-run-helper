@@ -14,14 +14,12 @@ import com.android.runweather.BuildConfig;
 import com.android.runweather.R;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.Map;
-
 public class HelpActivity extends AppCompatActivity {
 
-    private static final String EMAIL_ADDRESS = BuildConfig.EMAIL;
     public static final String JOG_ON_FEEDBACK = "Jog On feedback";
     public static final String CHOOSE_AN_EMAIL_CLIENT = "Choose an Email client";
     public static final String PLAIN_TEXT = "plain/text";
+    private static final String EMAIL_ADDRESS = BuildConfig.EMAIL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

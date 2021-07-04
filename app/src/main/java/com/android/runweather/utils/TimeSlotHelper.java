@@ -121,7 +121,6 @@ public class TimeSlotHelper {
     }
 
 
-
     /*
      * Ranks the desirability of a 'feels like' temp
      * @param temp

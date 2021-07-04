@@ -7,12 +7,12 @@
     <item
         android:id="@+id/menu_home"
         android:icon="@drawable/home"
-        app:showAsAction="ifRoom"
-        android:title="@string/home" />
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_email"
         android:icon="@drawable/email"
-        app:showAsAction="ifRoom"
-        android:title="@string/home" />
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
 </menu>

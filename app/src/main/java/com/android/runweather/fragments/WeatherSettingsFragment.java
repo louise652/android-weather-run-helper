@@ -39,13 +39,13 @@ import static com.android.runweather.utils.Constants.TEMP;
 import static com.android.runweather.utils.Constants.WEATHER_PREFERENCES;
 import static com.android.runweather.utils.Constants.WIND;
 
-public class WeatherSettingsFragment extends Fragment implements StartDragListener, View.OnClickListener  {
+public class WeatherSettingsFragment extends Fragment implements StartDragListener, View.OnClickListener {
 
     public SharedPreferences weatherPrefs, orderPrefs;
     RadioButton customOrder, timeOrder;
     RadioGroup customOrderRG;
 
-    LinearLayout customSelection, weatherPrefsLL;
+    LinearLayout weatherPrefsLL;
     RecyclerView recyclerView;
     RecyclerViewAdapter mAdapter;
     ItemTouchHelper touchHelper;
@@ -54,7 +54,6 @@ public class WeatherSettingsFragment extends Fragment implements StartDragListen
     public WeatherSettingsFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -84,7 +83,7 @@ public class WeatherSettingsFragment extends Fragment implements StartDragListen
         if (!orderPrefs.getBoolean(CUSTOM_ORDER, false)) {
             customOrderRG.check((R.id.radioTime));
             weatherPrefsLL.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             customOrderRG.check((R.id.radioCustom));
             weatherPrefsLL.setVisibility(View.VISIBLE);
         }
@@ -96,11 +95,9 @@ public class WeatherSettingsFragment extends Fragment implements StartDragListen
         saveWeatherSettings.setOnClickListener(this);
 
 
-
-
         populateRecyclerView();
 
-    return view;
+        return view;
     }
 
     /*
