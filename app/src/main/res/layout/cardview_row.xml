@@ -18,7 +18,8 @@
             android:id="@+id/weatherPrefItemTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:textAppearance="?attr/textAppearanceSubtitle2" />
 
         <ImageView
             android:id="@+id/dragIcon"

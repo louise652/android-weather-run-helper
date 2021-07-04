@@ -38,4 +38,5 @@
     <string name="settingsWeatherHelp_expanded">From the Home page, you can click on the Settings cog in the top right.\n\nYou can select your preferred weather conditions. Select if you want the results arranged by nearest time or by your own preference\n\nIf selecting your own preferences, drag and drop the various weather conditions in order of preference, with the most preferred at the top and least at the bottom.\n\nClick save to apply changes and click the Home icon to return to the main page</string>
     <string name="contact_collapsed">Get in Touch</string>
     <string name="contact_expanded">Click on the email icon in the menu bar to contact the developer with any questions, issues, feedback or suggestions.</string>
+    <string name="contact">Contact</string>
 </resources>

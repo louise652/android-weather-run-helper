@@ -23,7 +23,8 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:padding="10dp"
-            android:text="@string/order_by_time" />
+            android:text="@string/order_by_time"
+            android:textAppearance="?attr/textAppearanceSubtitle2" />
 
         <RadioButton
             android:id="@+id/radioCustom"
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/custom_order"
+            android:textAppearance="?attr/textAppearanceSubtitle2"
             app:layout_constraintEnd_toEndOf="parent" />
     </RadioGroup>
 

@@ -1,18 +1,13 @@
 package com.android.runweather.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,7 +56,7 @@ import static org.apache.commons.lang3.text.WordUtils.capitalize;
  * displaying current/future weather conditions
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends MenuActivity {
 
     String city;
     LatLng coords;
@@ -126,34 +121,6 @@ public class MainActivity extends AppCompatActivity {
             getWeatherResults();
             pullToRefresh.setRefreshing(false);
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_settings:
-                Intent settingsIntent = new Intent(MainActivity.this, TabbedSettingsActivity.class);
-                settingsIntent.putExtra(SUNRISE, sunriseHr);
-                settingsIntent.putExtra(SUNSET, sunsetHr);
-                startActivity(settingsIntent);
-                return true;
-
-            case R.id.menu_help:
-                Intent helpIntent = new Intent(MainActivity.this, HelpActivity.class);
-                startActivity(helpIntent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
     }
 
     private void initComponents() {
@@ -284,6 +251,12 @@ public class MainActivity extends AppCompatActivity {
             //used so that we can set user preferences to show results between sunrise and sunset
             sunriseHr = getHourOfDayFromTime(sunriseTime);
             sunsetHr = getHourOfDayFromTime(sunsetTime);
+
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(SUNRISE, sunriseHr);
+            editor.putInt(SUNSET, sunsetHr);
+            editor.apply();
 
             clouds.setText(String.format("%s%%", currentWeatherVO.getClouds()));
             currentDesc.setText(capitalize(currentWeatherVO.getWeather().get(ZERO).description));
